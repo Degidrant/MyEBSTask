@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabInCart"
+        style="@style/fab_purple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/fabFavorite"
+        app:layout_constraintEnd_toEndOf="@+id/textViewDesc"
+        app:layout_constraintTop_toTopOf="@+id/fabFavorite"
+        app:srcCompat="@drawable/ns_cart_empty" />
+
+    <TextView
+        android:id="@+id/textViewPriceSmall"
+        style="@style/PriceSmallText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:layout_constraintEnd_toEndOf="@+id/textViewPrice"
+        app:layout_constraintHorizontal_bias="0.553"
+        app:layout_constraintStart_toStartOf="@+id/textViewPrice"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPrice"
+        tools:text="$0000" />
+
+    <TextView
+        android:id="@+id/textViewPrice"
+        style="@style/PriceBigText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        app:layout_constraintEnd_toEndOf="@+id/textViewDesc"
+        app:layout_constraintStart_toStartOf="@+id/textViewName"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDesc"
+        tools:text="$0000" />
+
+    <TextView
+        android:id="@+id/textViewName"
+        style="@style/HeaderText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:text="Apple iPhone X" />
+
+    <TextView
+        android:id="@+id/textViewDesc"
+        style="@style/DescText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/textViewName"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewName"
+        app:layout_constraintTop_toBottomOf="@+id/textViewName"
+        tools:text="DescDescDescDesc\nDescDescDescDesc" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_marginStart="@dimen/_26sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabFavorite"
+        style="@style/fab_orange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_19sdp"
+        android:layout_marginBottom="@dimen/_19sdp"
+        android:adjustViewBounds="false"
+        android:clickable="true"
+        android:cropToPadding="false"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textViewDesc"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPrice"
+        app:srcCompat="@drawable/ns_like"
+        app:useCompatPadding="false" />
+</androidx.constraintlayout.widget.ConstraintLayout>

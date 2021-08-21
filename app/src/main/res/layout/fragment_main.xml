@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.MainFragment">
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_33sdp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/white"
+        android:translationZ="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintTop_toTopOf="@+id/button" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mainRV"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        android:paddingBottom="120dp"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"/>
+
+    <ImageView
+        android:id="@+id/filterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_22sdp"
+        android:src="@drawable/ns_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/MinorColorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/filters"
+        app:layout_constraintBottom_toBottomOf="@+id/filterButton"
+        app:layout_constraintStart_toEndOf="@+id/filterButton"
+        app:layout_constraintTop_toTopOf="@+id/filterButton" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSquareStyle"
+        style="@style/fab_square_unfocused"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:adjustViewBounds="false"
+        android:clickable="true"
+        android:contextClickable="false"
+        android:cropToPadding="false"
+        android:src="@drawable/ns_grid"
+        app:layout_constraintBottom_toBottomOf="@+id/fabColumnStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fabColumnStyle" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabColumnStyle"
+        style="@style/fab_square_focused"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@drawable/ns_rows"
+        app:layout_constraintBottom_toBottomOf="@+id/filterButton"
+        app:layout_constraintEnd_toStartOf="@+id/fabSquareStyle"
+        app:layout_constraintTop_toTopOf="@+id/filterButton" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_48sdp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="@+id/fabSquareStyle"
+        app:layout_constraintStart_toStartOf="@+id/filterButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_33sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:fontFamily="@font/open_sans_bold_light"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/my_cart"
+        app:shapeAppearanceOverlay="@style/fab_semi_square"
+        android:textSize="@dimen/_10ssp"
+        app:backgroundTint="@color/purple"
+        app:layout_constraintBottom_toBottomOf="@+id/mainRV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_33sdp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/white"
+        android:translationZ="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/button"
+        app:layout_constraintTop_toTopOf="@+id/button" />
+
+    <TextView
+        android:id="@+id/textViewCartSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:layout_marginEnd="@dimen/_7sdp"
+        android:layout_marginBottom="@dimen/_7sdp"
+        android:background="@drawable/circle"
+        tools:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        android:fontFamily="@font/open_sans_bold_light"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/divider3"
+        app:layout_constraintTop_toTopOf="@+id/button" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_9sdp"
+        android:layout_marginTop="@dimen/_9sdp"
+        android:layout_marginEnd="@dimen/_9sdp"
+        android:layout_marginBottom="@dimen/_9sdp"
+        android:src="@drawable/ns_cart_empty"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/divider2"
+        app:layout_constraintStart_toStartOf="@+id/button"
+        app:layout_constraintTop_toTopOf="@+id/button"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

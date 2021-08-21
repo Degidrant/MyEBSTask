@@ -1,0 +1,97 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.AndroidMyTaskApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/deep_blue</item>
+        <item name="colorPrimaryVariant">@color/deep_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple</item>
+        <item name="colorSecondaryVariant">@color/funny_orange</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="HeaderText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/deep_blue</item>
+        <item name="android:textSize">@dimen/_15ssp</item>
+        <item name="fontFamily">@font/open_sans_bold</item>
+    </style>
+
+    <style name="DescText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/metallic_gray</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
+    </style>
+
+    <style name="MinorColorText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/dark_blue</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="fontFamily">@font/open_sans_semi_bold</item>
+    </style>
+
+    <style name="PriceBigText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/mild_blue</item>
+        <item name="android:textSize">@dimen/_13ssp</item>
+        <item name="fontFamily">@font/open_sans_semi_bold</item>
+    </style>
+
+    <style name="PriceSmallText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/ghost_gray</item>
+        <item name="android:textSize">@dimen/_9ssp</item>
+        <item name="fontFamily">@font/open_sans_semi_bold</item>
+    </style>
+
+    <style name="fab_orange" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="tint">@color/funny_orange</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="maxImageSize">@dimen/_21sdp</item>
+    </style>
+
+    <style name="fab_orange_focused" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="icon">@drawable/ic_favorite</item>
+        <item name="backgroundTint">@color/mild_orange</item>
+        <item name="maxImageSize">@dimen/_21sdp</item>
+        <item name="elevation">1dp</item>
+    </style>
+
+    <style name="fab_purple" parent="fab_orange">
+        <item name="tint">@color/dark_blue</item>
+        <item name="maxImageSize">@dimen/_19sdp</item>
+    </style>
+
+    <style name="fab_square_unfocused" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/light_gray</item>
+        <item name="tint">@color/dark_blue</item>
+        <item name="maxImageSize">@dimen/_11sdp</item>
+        <item name="fabCustomSize">@dimen/_25sdp</item>
+        <item name="shapeAppearanceOverlay">@style/fab_ultra_square</item>
+    </style>
+
+    <style name="fab_square_focused" parent="fab_square_unfocused">
+        <item name="backgroundTint">@color/deep_blue</item>
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="fab_ultra_square">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5%</item>
+    </style>
+
+    <style name="fab_semi_square">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">15%</item>
+    </style>
+
+    <style name="button_sharp_corners" parent="Widget.MaterialComponents.Button">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="shapeAppearanceOverlay">@style/fab_ultra_square</item>
+        <item name="fontFamily">@font/open_sans_bold_light</item>
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
+
+
+</resources>
