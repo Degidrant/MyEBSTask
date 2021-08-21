@@ -141,31 +141,6 @@ class MainFragment : Fragment() {
 
 
     private fun setupObservers() {
-        /*viewModel.getProducts().observe(
-            viewLifecycleOwner,
-            {
-                it?.let {
-                    when (it.status) {
-                        Status.SUCCESS -> {
-                            //deco
-                            it.data?.let { dataList ->
-                                finalList = dataList.products
-                                updateAdapter(finalList)
-                            }
-                        }
-                        Status.ERROR -> {
-                            //deco
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                        }
-                        Status.LOADING -> {
-                            //deco
-                        }
-                    }
-                }
-            }
-        )*/
-
-
 
         FavoritesTemp.cartObserver.observe(
             viewLifecycleOwner,
@@ -187,23 +162,7 @@ class MainFragment : Fragment() {
 
     }
 
-    /*private fun updateAdapter(dataList: List<Product>) {
-        adapter.apply {
-            addProducts(dataList)
-            notifyDataSetChanged()
-        }
-
-    }*/
-
-
     private fun setRecyclerViewUI() {
-        /*adapter = MainRecyclerAdapter(arrayListOf(), lifecycleScope, findNavController(), magicLinearManager)
-        binding.mainRV.apply {
-            layoutManager = magicLinearManager
-            adapter = this@MainFragment.adapter
-
-        }*/
-
         adapter = MainRecyclerAdapter(lifecycleScope, findNavController(), magicLinearManager)
         binding.mainRV.apply {
             layoutManager = magicLinearManager
