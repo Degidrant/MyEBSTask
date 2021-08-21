@@ -204,7 +204,7 @@ class MainRecyclerAdapter(
                     fabFavorite.setImageDrawable(
                         ContextCompat.getDrawable(
                             context,
-                            R.drawable.ic_favorite
+                            R.drawable.ns_favorite_full
                         )
                     )
                     fabFavorite.backgroundTintList =
@@ -213,7 +213,7 @@ class MainRecyclerAdapter(
                     fabFavorite.setImageDrawable(
                         ContextCompat.getDrawable(
                             context,
-                            R.drawable.ic_heart
+                            R.drawable.ns_like
                         )
                     )
                     fabFavorite.backgroundTintList =

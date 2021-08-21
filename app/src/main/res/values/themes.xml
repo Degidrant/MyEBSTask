@@ -50,13 +50,6 @@
         <item name="maxImageSize">@dimen/_21sdp</item>
     </style>
 
-    <style name="fab_orange_focused" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="icon">@drawable/ic_favorite</item>
-        <item name="backgroundTint">@color/mild_orange</item>
-        <item name="maxImageSize">@dimen/_21sdp</item>
-        <item name="elevation">1dp</item>
-    </style>
-
     <style name="fab_purple" parent="fab_orange">
         <item name="tint">@color/dark_blue</item>
         <item name="maxImageSize">@dimen/_19sdp</item>

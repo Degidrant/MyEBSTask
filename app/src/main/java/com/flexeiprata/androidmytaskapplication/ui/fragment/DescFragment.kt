@@ -83,10 +83,10 @@ class DescFragment : Fragment() {
             R.id.menu_favourite -> {
                 if (FavoritesTemp.favoriteList.contains(product)) {
                     FavoritesTemp.favoriteList.remove(product)
-                    item.setIcon(R.drawable.ic_heart)
+                    item.setIcon(R.drawable.ns_like)
                 } else {
                     FavoritesTemp.favoriteList.add(product)
-                    item.setIcon(R.drawable.ic_favorite_white)
+                    item.setIcon(R.drawable.ns_favorite_full)
                 }
             }
             else -> findNavController().popBackStack()

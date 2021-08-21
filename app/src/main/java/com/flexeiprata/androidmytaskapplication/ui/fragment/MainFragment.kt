@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -168,6 +169,12 @@ class MainFragment : Fragment() {
             layoutManager = magicLinearManager
             adapter = this@MainFragment.adapter
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+        }
+        adapter.addLoadStateListener {
+            binding.progressBar.visibility =
+                if (it.refresh == LoadState.Loading)
+                    View.VISIBLE
+                else View.INVISIBLE
         }
 
     }
