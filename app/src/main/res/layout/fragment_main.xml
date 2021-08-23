@@ -15,9 +15,9 @@
         android:background="?android:attr/listDivider"
         android:backgroundTint="@color/white"
         android:translationZ="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintBottom_toBottomOf="@+id/cartButton"
+        app:layout_constraintEnd_toEndOf="@+id/cartButton"
+        app:layout_constraintTop_toTopOf="@+id/cartButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainRV"
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_14sdp"
-        android:layout_marginTop="@dimen/_22sdp"
         android:src="@drawable/ns_filter"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -80,14 +80,14 @@
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="@dimen/_2sdp"
-        android:layout_marginTop="@dimen/_48sdp"
+        android:layout_marginTop="@dimen/_60sdp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="@+id/fabSquareStyle"
         app:layout_constraintStart_toStartOf="@+id/filterButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button"
+        android:id="@+id/cartButton"
         android:layout_width="0dp"
         android:layout_height="@dimen/_33sdp"
         android:layout_marginStart="@dimen/_12sdp"
@@ -112,9 +112,9 @@
         android:background="?android:attr/listDivider"
         android:backgroundTint="@color/white"
         android:translationZ="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintBottom_toBottomOf="@+id/cartButton"
+        app:layout_constraintStart_toStartOf="@+id/cartButton"
+        app:layout_constraintTop_toTopOf="@+id/cartButton" />
 
     <TextView
         android:id="@+id/textViewCartSize"
@@ -131,10 +131,10 @@
         android:textSize="@dimen/_13ssp"
         android:fontFamily="@font/open_sans_bold_light"
         android:translationZ="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/cartButton"
+        app:layout_constraintEnd_toEndOf="@+id/cartButton"
         app:layout_constraintStart_toEndOf="@+id/divider3"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintTop_toTopOf="@+id/cartButton" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -146,10 +146,10 @@
         android:layout_marginBottom="@dimen/_9sdp"
         android:src="@drawable/ns_cart_empty"
         android:translationZ="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/cartButton"
         app:layout_constraintEnd_toStartOf="@+id/divider2"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/cartButton"
+        app:layout_constraintTop_toTopOf="@+id/cartButton"
         app:tint="@color/white" />
 
     <ProgressBar
@@ -158,7 +158,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_8sdp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/cartButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

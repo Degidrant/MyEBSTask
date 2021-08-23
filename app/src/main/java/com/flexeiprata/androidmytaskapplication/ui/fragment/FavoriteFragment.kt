@@ -2,6 +2,7 @@ package com.flexeiprata.androidmytaskapplication.ui.fragment
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -13,14 +14,14 @@ import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
-import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.FavViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FavoriteFragment : Fragment() {
+class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
 
     private var _binding: FavFragmentBinding? = null
     private val binding get() = _binding!!
@@ -52,21 +53,25 @@ class FavoriteFragment : Fragment() {
                 setDisplayHomeAsUpEnabled(true)
             }
         }
+        binding.cartButton.setOnClickListener {
+            viewModel.clearCart()
+            Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupObservers() {
-        updateAdapter(FavoritesTemp.favoriteList)
-        FavoritesTemp.cartObserver.observe(
+        viewModel.getCart().observe(
             viewLifecycleOwner,
             {
                 binding.textViewCartSize.text = it.size.toString()
             }
         )
-        FavoritesTemp.favObserver.observe(
+
+        viewModel.getAllFav().observe(
             viewLifecycleOwner,
             {
+                updateAdapter(it)
                 binding.favCountText.text = it.size.toString()
-                updateAdapter(FavoritesTemp.favoriteList)
             }
         )
 
@@ -100,7 +105,7 @@ class FavoriteFragment : Fragment() {
 
     private fun setRecyclerViewUI() {
         val magicLayoutManager = GridLayoutManager(requireContext(), 1)
-        adapter = MainRecyclerAdapter(lifecycleScope, findNavController(), magicLayoutManager)
+        adapter = MainRecyclerAdapter(this, findNavController(), magicLayoutManager)
         binding.mainRV.apply {
             layoutManager = magicLayoutManager
             adapter = this@FavoriteFragment.adapter
@@ -113,4 +118,19 @@ class FavoriteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun deleteFav(fav: Product) {
+        viewModel.deleteFav(fav)
+    }
+
+    override fun insertFav(fav: Product) {
+        viewModel.insertFav(fav)
+    }
+
+    override fun getFavByID(id: Int): Flow<Product?> = viewModel.getFavById(id)
+
+    override fun addToCart(product: Product) {
+        viewModel.addToCart(product)
+    }
+
 }

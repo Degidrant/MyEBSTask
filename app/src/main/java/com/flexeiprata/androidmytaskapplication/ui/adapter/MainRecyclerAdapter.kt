@@ -6,35 +6,48 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterGridBinding
-import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
 import com.flexeiprata.androidmytaskapplication.ui.fragment.MainFragmentDirections
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainRecyclerAdapter(
-    val coroutineScope: CoroutineScope,
+    val parentFragment: Fragment,
     val navController: NavController,
     var thisLayoutManager: GridLayoutManager
 ) : PagingDataAdapter<Product, MainRecyclerAdapter.ViewBindingViewHolder>(MainDiffUtil) {
 
     private lateinit var context: Context
+    private lateinit var parentInterface: FavoriteSwitch
+
+    interface FavoriteSwitch{
+        fun deleteFav(fav: Product)
+        fun insertFav(fav: Product)
+        fun getFavByID(id: Int) : Flow<Product?>
+        fun addToCart(product: Product)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainRecyclerAdapter.ViewBindingViewHolder {
         context = parent.context
+        parentInterface = parentFragment as FavoriteSwitch
         return if (viewType == 1) {
             val binding =
                 MainAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -55,10 +68,8 @@ class MainRecyclerAdapter(
 
     }
 
-    open inner class ViewBindingViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        open fun bind(product: Product){
-
-        }
+    abstract class ViewBindingViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        abstract fun bind(product: Product)
     }
 
     object MainDiffUtil : DiffUtil.ItemCallback<Product>() {
@@ -86,37 +97,54 @@ class MainRecyclerAdapter(
                 textViewPrice.text = pricePlace
                 textViewPriceSmall.text = pricePlace
 
-                coroutineScope.launch(Dispatchers.IO) {
+                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
                     val glide = Glide.with(imageView.context)
                         .load(product.category.icon)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     withContext(Dispatchers.Main) {
                         glide.into(imageView)
                     }
                 }
 
-                setButtonStyle(FavoritesTemp.favoriteList.contains(product))
+                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                    val checker = parentInterface.getFavByID(product.id).first() == null
+                    withContext(Dispatchers.Main){
+                        setButtonStyle(!checker)
+                    }
+                }
+
 
                 itemView.setOnClickListener {
-                    navController.navigate(
-                        MainFragmentDirections.actionMainFragmentToDescFragment(
-                            product.id,
-                            FavoritesTemp.favoriteList.contains(product)
-                        )
-                    )
+                    parentFragment.lifecycleScope.launch(Dispatchers.IO){
+                        val checker = parentInterface.getFavByID(product.id).first() == null
+                        withContext(Dispatchers.Main) {
+                            navController.navigate(
+                                MainFragmentDirections.actionMainFragmentToDescFragment(
+                                    product.id,
+                                    !checker
+                                )
+                            )
+                        }
+                    }
                 }
 
                 fabInCart.setOnClickListener {
-                    FavoritesTemp.cart.add(product)
-                    FavoritesTemp.cartObserver.postValue(FavoritesTemp.cart)
+                    parentInterface.addToCart(product)
+                    Toast.makeText(context, "${product.name} has been added to cart!", Toast.LENGTH_SHORT).show()
                 }
 
                 fabFavorite.setOnClickListener {
-                    with(!FavoritesTemp.favoriteList.contains(product)) {
-                        setButtonStyle(this)
-                        if (this) FavoritesTemp.favoriteList.add(product)
-                        else FavoritesTemp.favoriteList.remove(product)
-                        FavoritesTemp.favObserver.value = FavoritesTemp.favoriteList
+                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                        Log.d(LOG_DEBUG, parentInterface.getFavByID(product.id).first()?.toString() ?: "Not found with ${product.id}")
+                        with(parentInterface.getFavByID(product.id).first() == null) {
+                            if (this) parentInterface.insertFav(product)
+                            else parentInterface.deleteFav(product)
+                            withContext(Dispatchers.Main){
+                                setButtonStyle(this@with)
+                            }
+                        }
                     }
+
                 }
             }
         }
@@ -162,38 +190,53 @@ class MainRecyclerAdapter(
                 textViewPrice.text = pricePlace
                 textViewPriceSmall.text = pricePlace
 
-                coroutineScope.launch(Dispatchers.IO) {
+                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
                     val glide = Glide.with(imageView.context)
                         .load(product.category.icon)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     withContext(Dispatchers.Main) {
                         glide.into(imageView)
-                        //imageView.startAnimation(getFadeInAnimation(500))
                     }
                 }
 
-                setButtonStyle(FavoritesTemp.favoriteList.contains(product))
+                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                    val checker = parentInterface.getFavByID(product.id).first() == null
+                    withContext(Dispatchers.Main){
+                        setButtonStyle(!checker)
+                    }
+                }
 
                 itemView.setOnClickListener {
-                    navController.navigate(
-                        MainFragmentDirections.actionMainFragmentToDescFragment(
-                            product.id,
-                            FavoritesTemp.favoriteList.contains(product)
-                        )
-                    )
+                    parentFragment.lifecycleScope.launch(Dispatchers.IO){
+                        val checker = parentInterface.getFavByID(product.id).first() == null
+                        withContext(Dispatchers.Main) {
+                            navController.navigate(
+                                MainFragmentDirections.actionMainFragmentToDescFragment(
+                                    product.id,
+                                    !checker
+                                )
+                            )
+                        }
+                    }
                 }
 
                 fabInCart.setOnClickListener {
-                    FavoritesTemp.cart.add(product)
-                    FavoritesTemp.cartObserver.postValue(FavoritesTemp.cart)
+                    parentInterface.addToCart(product)
+                    Toast.makeText(context, "${product.name} has been added to cart!", Toast.LENGTH_SHORT).show()
                 }
 
                 fabFavorite.setOnClickListener {
-                    with(!FavoritesTemp.favoriteList.contains(product)) {
-                        setButtonStyle(this)
-                        if (this) FavoritesTemp.favoriteList.add(product)
-                        else FavoritesTemp.favoriteList.remove(product)
-                        FavoritesTemp.favObserver.value = FavoritesTemp.favoriteList
+                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                        Log.d(LOG_DEBUG, parentInterface.getFavByID(product.id).first()?.toString() ?: "Not found with ${product.id}")
+                        with(parentInterface.getFavByID(product.id).first() == null) {
+                            if (this) parentInterface.insertFav(product)
+                            else parentInterface.deleteFav(product)
+                            withContext(Dispatchers.Main){
+                                setButtonStyle(this@with)
+                            }
+                        }
                     }
+
                 }
             }
         }

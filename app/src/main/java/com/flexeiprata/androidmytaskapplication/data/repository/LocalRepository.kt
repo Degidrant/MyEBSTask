@@ -5,6 +5,14 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 import javax.inject.Inject
 
 class LocalRepository @Inject constructor(private val dao: MainDao) {
-    suspend fun getAllFav() = dao.getAllFav()
-    suspend fun insertFav(product : Product) = dao.insertFavorite(product)
+    fun getAllFav() = dao.getAllFav()
+    suspend fun insertFav(product : Product) {
+        product.logicCategory = 0
+        dao.insertFavorite(product)
+
+    }
+    suspend fun deleteFav(product: Product){
+        dao.deleteFavorite(product.id)
+    }
+    fun getFavByID(id: Int) = dao.getFavByID(id)
 }

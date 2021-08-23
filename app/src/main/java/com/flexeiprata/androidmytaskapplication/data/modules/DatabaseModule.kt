@@ -2,6 +2,7 @@ package com.flexeiprata.androidmytaskapplication.data.modules
 
 import android.content.Context
 import androidx.room.Room
+import com.flexeiprata.androidmytaskapplication.data.db.CartDao
 import com.flexeiprata.androidmytaskapplication.data.db.MainDao
 import com.flexeiprata.androidmytaskapplication.data.db.MainDataBase
 import dagger.Module
@@ -18,6 +19,11 @@ object DatabaseModule {
     @Provides
     fun provideMainDao(mainDataBase: MainDataBase): MainDao{
         return mainDataBase.getMainDao()
+    }
+
+    @Provides
+    fun provideCartDao(mainDataBase: MainDataBase): CartDao{
+        return  mainDataBase.getCartDao()
     }
 
     @Provides

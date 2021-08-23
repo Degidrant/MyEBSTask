@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
@@ -13,16 +14,17 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
+import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
-import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
@@ -64,6 +66,10 @@ class MainFragment : Fragment() {
             }
             fabSquareStyle.setOnClickListener {
                 switchLayoutManager(false)
+            }
+            cartButton.setOnClickListener {
+                viewModel.clearCart()
+                Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -131,7 +137,7 @@ class MainFragment : Fragment() {
     private fun setupObservers() {
 
 
-        FavoritesTemp.cartObserver.observe(
+        viewModel.getCart().observe(
             viewLifecycleOwner,
             Observer { binding.textViewCartSize.text = it.size.toString() }
         )
@@ -150,7 +156,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setRecyclerViewUI() {
-        adapter = MainRecyclerAdapter(lifecycleScope, findNavController(), magicLinearManager)
+        adapter = MainRecyclerAdapter(this, findNavController(), magicLinearManager)
         binding.mainRV.apply {
             layoutManager = magicLinearManager
             adapter = this@MainFragment.adapter
@@ -169,5 +175,21 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun deleteFav(fav: Product) {
+        viewModel.deleteFav(fav)
+    }
+
+    override fun insertFav(fav: Product) {
+        viewModel.insertFav(fav)
+    }
+
+    override fun getFavByID(id: Int): Flow<Product?> {
+        return viewModel.getFavById(id)
+    }
+
+    override fun addToCart(product: Product) {
+        viewModel.addToCart(product)
     }
 }

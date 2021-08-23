@@ -9,15 +9,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
-import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
 import com.flexeiprata.androidmytaskapplication.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -71,12 +72,20 @@ class DescFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_favourite -> {
-                if (FavoritesTemp.favoriteList.contains(product)) {
-                    FavoritesTemp.favoriteList.remove(product)
-                    item.setIcon(R.drawable.ns_like)
-                } else {
-                    FavoritesTemp.favoriteList.add(product)
-                    item.setIcon(R.drawable.ns_favorite_full)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val checker = viewModel.getFavById(product.id).first() == null
+                    if (checker) {
+                        viewModel.insertFav(product)
+                        withContext(Dispatchers.Main) {
+                            item.setIcon(R.drawable.ns_favorite_full)
+                        }
+                    }
+                    else {
+                        viewModel.deleteFav(product)
+                        withContext(Dispatchers.Main) {
+                            item.setIcon(R.drawable.ns_like)
+                        }
+                    }
                 }
             }
             else -> findNavController().popBackStack()
@@ -97,7 +106,7 @@ class DescFragment : Fragment() {
                             }
                         }
                         Status.ERROR -> {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Loading Error", Toast.LENGTH_SHORT).show()
                         }
                         Status.LOADING -> {
                         }
@@ -119,16 +128,17 @@ class DescFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 val glide = Glide.with(mainPhotoImage.context)
                     .load(product.category.icon)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 withContext(Dispatchers.Main) {
                     glide.into(mainPhotoImage)
-                    //mainPhotoImage.startAnimation(getFadeInAnimation(500))
                 }
             }
 
             buttonAddToCard.setOnClickListener {
-                FavoritesTemp.cart.add(product)
-                FavoritesTemp.cartObserver.postValue(FavoritesTemp.cart)
+                viewModel.addToCart(product)
+                Toast.makeText(context, "${product.name} has been added to cart!", Toast.LENGTH_SHORT).show()
             }
+
 
         }
     }
