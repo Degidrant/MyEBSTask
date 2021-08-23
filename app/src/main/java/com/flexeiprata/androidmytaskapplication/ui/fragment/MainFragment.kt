@@ -5,42 +5,31 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavArgs
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
-import com.flexeiprata.androidmytaskapplication.data.api.ApiHelper
-import com.flexeiprata.androidmytaskapplication.data.api.RetrofitBuilder
-import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
 import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
-import com.flexeiprata.androidmytaskapplication.ui.base.ViewModelFactory
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
-import com.flexeiprata.androidmytaskapplication.utils.Status
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var adapter: MainRecyclerAdapter
 
-    private lateinit var finalList: List<Product>
     private lateinit var magicLinearManager: GridLayoutManager
 
 
@@ -60,7 +49,6 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         magicLinearManager = GridLayoutManager(requireContext(), 1)
-        setViewModel()
         setRecyclerViewUI()
         setupObservers()
         (activity as MainActivity).supportActionBar?.let {
@@ -126,8 +114,7 @@ class MainFragment : Fragment() {
                     ColorStateList.valueOf(requireContext().getColor(R.color.deep_blue))
                 try {
                     mainRV.removeItemDecoration(mainRV.getItemDecorationAt(0))
-                }
-                catch (ex: Exception){
+                } catch (ex: Exception) {
                     ex.printStackTrace()
                 }
                 2
@@ -143,17 +130,16 @@ class MainFragment : Fragment() {
 
     private fun setupObservers() {
 
+
         FavoritesTemp.cartObserver.observe(
             viewLifecycleOwner,
-            {
-                binding.textViewCartSize.text = it.size.toString()
-            }
+            Observer { binding.textViewCartSize.text = it.size.toString() }
         )
 
 
         viewModel.listData.observe(
             viewLifecycleOwner,
-            {
+            Observer {
                 lifecycleScope.launch {
                     adapter.submitData(it)
                 }
@@ -179,12 +165,6 @@ class MainFragment : Fragment() {
 
     }
 
-    private fun setViewModel() {
-        viewModel =
-            ViewModelProvider(this, ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))).get(
-                MainViewModel::class.java
-            )
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

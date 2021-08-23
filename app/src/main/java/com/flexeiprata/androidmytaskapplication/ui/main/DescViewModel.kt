@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
 import com.flexeiprata.androidmytaskapplication.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class DescViewModel (private val repository: MainRepository) : ViewModel(){
+@HiltViewModel
+class DescViewModel @Inject constructor(private val repository: MainRepository) : ViewModel(){
     fun getProductsById(id : Int) = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))
         try {

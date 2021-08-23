@@ -3,31 +3,29 @@ package com.flexeiprata.androidmytaskapplication.ui.fragment
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
-import com.flexeiprata.androidmytaskapplication.data.api.ApiHelper
-import com.flexeiprata.androidmytaskapplication.data.api.RetrofitBuilder
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
 import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
-import com.flexeiprata.androidmytaskapplication.ui.base.FavViewModelFactory
 import com.flexeiprata.androidmytaskapplication.ui.main.FavViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class FavoriteFragment : Fragment() {
 
     private var _binding: FavFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: FavViewModel
+    private val viewModel: FavViewModel by viewModels()
     private lateinit var adapter: MainRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +43,6 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewModel()
         setRecyclerViewUI()
         setupObservers()
         (activity as MainActivity).supportActionBar?.let {
@@ -55,15 +52,6 @@ class FavoriteFragment : Fragment() {
                 setDisplayHomeAsUpEnabled(true)
             }
         }
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            FavViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
-        ).get(
-            FavViewModel::class.java
-        )
     }
 
     private fun setupObservers() {

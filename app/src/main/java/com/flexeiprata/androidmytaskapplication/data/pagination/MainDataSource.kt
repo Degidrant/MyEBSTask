@@ -28,8 +28,10 @@ class MainDataSource(private val repository: MainRepository) : PagingSource<Int,
     }
 
     override fun getRefreshKey(state: PagingState<Int, Product>): Int? {
-        //Ia ne znaiu chto eto
-        return 0
+        return state.anchorPosition?.let {
+            state.closestPageToPosition(it)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(it)?.nextKey?.minus(1)
+        }
     }
 
 

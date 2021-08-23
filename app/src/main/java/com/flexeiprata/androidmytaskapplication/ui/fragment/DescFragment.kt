@@ -4,31 +4,30 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
-import com.flexeiprata.androidmytaskapplication.data.api.ApiHelper
-import com.flexeiprata.androidmytaskapplication.data.api.RetrofitBuilder
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
 import com.flexeiprata.androidmytaskapplication.temporary.FavoritesTemp
-import com.flexeiprata.androidmytaskapplication.ui.base.DescViewModelFactory
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
 import com.flexeiprata.androidmytaskapplication.utils.Status
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class DescFragment : Fragment() {
 
     private var _binding: DescFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: DescViewModel
+    private val viewModel: DescViewModel by viewModels()
     private val args: DescFragmentArgs by navArgs()
 
     private lateinit var product: Product
@@ -51,7 +50,6 @@ class DescFragment : Fragment() {
         binding.apply {
             scroller.visibility = View.INVISIBLE
         }
-        setupViewModel()
         setupObservers()
         (activity as MainActivity).supportActionBar?.let {
             it.apply {
@@ -62,14 +60,6 @@ class DescFragment : Fragment() {
         }
     }
 
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            DescViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
-        ).get(
-            DescViewModel::class.java
-        )
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (!args.isFav) inflater.inflate(R.menu.main_menu, menu)
