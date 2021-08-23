@@ -5,7 +5,7 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MainDao {
+interface LocalDao {
 
     @Query("Select * from product Where logicCategory = 0")
     fun getAllFav(): Flow<List<Product>>
@@ -18,4 +18,7 @@ interface MainDao {
 
     @Query("Select * from product Where id = :id and logicCategory = 0")
     fun getFavByID(id: Int) : Flow<Product?>
+
+    @Query("Update product set price = :newPrice Where id = :id")
+    suspend fun actualizePrice(newPrice: Int, id: Int)
 }

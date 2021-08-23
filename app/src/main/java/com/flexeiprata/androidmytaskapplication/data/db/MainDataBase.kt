@@ -6,6 +6,6 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 
 @Database(entities = [Product::class], version = 1)
 abstract class MainDataBase : RoomDatabase() {
-    abstract fun getMainDao(): MainDao
+    abstract fun getMainDao(): LocalDao
     abstract fun getCartDao(): CartDao
 }

@@ -2,22 +2,17 @@ package com.flexeiprata.androidmytaskapplication.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
-import androidx.paging.liveData
+import androidx.paging.*
 import com.flexeiprata.androidmytaskapplication.data.models.Product
+import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.data.pagination.MainDataSource
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
 import com.flexeiprata.androidmytaskapplication.utils.PAGE_SIZE
-import com.flexeiprata.androidmytaskapplication.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +24,12 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     val listData = Pager(PagingConfig(PAGE_SIZE)) {
         MainDataSource(repository)
-    }.liveData.cachedIn(viewModelScope)
+    }
+        .liveData.cachedIn(viewModelScope).map {pagingData ->
+            pagingData.map {product->
+                ProductUIModel(product)
+            }
+        }
 
     fun insertFav(fav: Product) = viewModelScope.launch {
         localRepository.insertFav(fav)

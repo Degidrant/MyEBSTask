@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
+import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.FavViewModel
@@ -72,6 +73,11 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             {
                 updateAdapter(it)
                 binding.favCountText.text = it.size.toString()
+
+                viewModel.actualizeData(it).invokeOnCompletion { _ ->
+                    updateAdapter(it)
+                }
+
             }
         )
 
@@ -97,7 +103,9 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private fun updateAdapter(dataList: List<Product>) {
         adapter.apply {
             lifecycleScope.launch {
-                submitData(PagingData.from(dataList))
+                submitData(PagingData.from(dataList.map {
+                    ProductUIModel(it)
+                }))
             }
         }
     }

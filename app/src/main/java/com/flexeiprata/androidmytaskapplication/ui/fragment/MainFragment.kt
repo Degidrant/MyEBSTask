@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.map
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
@@ -126,10 +127,6 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 2
             }
             adapter.notifyItemRangeChanged(0, mainRV.adapter!!.itemCount - 1)
-            Log.d(
-                LOG_DEBUG,
-                "Vo = ${magicLinearManager.spanCount}, A = ${mainRV.adapter!!.itemCount - 1}"
-            )
         }
     }
 

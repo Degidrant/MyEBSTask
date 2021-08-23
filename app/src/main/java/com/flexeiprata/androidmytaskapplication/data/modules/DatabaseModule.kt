@@ -3,7 +3,7 @@ package com.flexeiprata.androidmytaskapplication.data.modules
 import android.content.Context
 import androidx.room.Room
 import com.flexeiprata.androidmytaskapplication.data.db.CartDao
-import com.flexeiprata.androidmytaskapplication.data.db.MainDao
+import com.flexeiprata.androidmytaskapplication.data.db.LocalDao
 import com.flexeiprata.androidmytaskapplication.data.db.MainDataBase
 import dagger.Module
 import dagger.Provides
@@ -17,7 +17,7 @@ import javax.inject.Singleton
 object DatabaseModule {
 
     @Provides
-    fun provideMainDao(mainDataBase: MainDataBase): MainDao{
+    fun provideMainDao(mainDataBase: MainDataBase): LocalDao{
         return mainDataBase.getMainDao()
     }
 
