@@ -19,15 +19,16 @@
         app:layout_constraintEnd_toEndOf="@+id/cartButton"
         app:layout_constraintTop_toTopOf="@+id/cartButton" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mainRV"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainRV"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
 
     <ImageView
         android:id="@+id/filterButton"

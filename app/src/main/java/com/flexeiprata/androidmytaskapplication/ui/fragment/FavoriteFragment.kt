@@ -58,6 +58,19 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             viewModel.clearCart()
             Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
         }
+        binding.swiper.setOnRefreshListener {
+            val refresher = viewModel.getAllFav()
+            refresher.observe(
+                viewLifecycleOwner,
+                {
+                    viewModel.actualizeData(it).invokeOnCompletion { _ ->
+                        updateAdapter(it)
+                        binding.swiper.isRefreshing = false
+                        refresher.removeObservers(viewLifecycleOwner)
+                    }
+                }
+            )
+        }
     }
 
     private fun setupObservers() {
@@ -73,11 +86,7 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             {
                 updateAdapter(it)
                 binding.favCountText.text = it.size.toString()
-
-                viewModel.actualizeData(it).invokeOnCompletion { _ ->
-                    updateAdapter(it)
-                }
-
+                viewModel.actualizeData(it)
             }
         )
 

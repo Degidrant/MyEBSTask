@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
+import com.flexeiprata.androidmytaskapplication.data.models.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterGridBinding
@@ -79,15 +80,25 @@ class MainRecyclerAdapter(
         payloads: MutableList<Any>
     ) {
         if (!payloads.isNullOrEmpty()) {
-            payloads.forEach { payload ->
-                if (payload is Payloadable) {
-                    when (payload) {
-                        is ProductPayloads.PriceChanged -> holder.updatePrice(payload.price)
+            payloads.forEach { payloadList ->
+                if (payloadList is List<*>) {
+                    (payloadList as List<Payloadable>).forEach { payload ->
+                        when (payload) {
+                            is ProductPayloads.PriceChanged -> holder.updatePrice(payload.price)
+                            is ProductPayloads.DescChanged -> holder.updateDesc(
+                                String.format(
+                                    "%1s\n%2s",
+                                    payload.size,
+                                    payload.color
+                                )
+                            )
+                            is ProductPayloads.PicChanged -> holder.updateImage(payload.url)
+                            is ProductPayloads.NameChanged -> holder.updateName(payload.name)
+                        }
                     }
                 }
             }
-        }
-        else {
+        } else {
             getItem(position)?.let {
                 holder.bind(it)
             }
@@ -116,7 +127,11 @@ class MainRecyclerAdapter(
             oldItem: ProductUIModel,
             newItem: ProductUIModel
         ): List<Payloadable>? {
-            return oldItem.payloads(newItem)
+            val payloads = oldItem.payloads(newItem)
+            return if (!payloads.isNullOrEmpty())
+                payloads
+            else
+                null
         }
     }
 
@@ -128,69 +143,68 @@ class MainRecyclerAdapter(
     inner class InnerViewHolder(private val view: MainAdapterBinding) :
         ViewBindingViewHolder(view.root) {
         override fun bind(item: ProductUIModel) {
-                Log.d(LOG_DEBUG, "I'm here")
-                val product = item.product
-                view.apply {
+            val product = item.product
+            view.apply {
 
-                    updatePrice(product.price)
-                    updateName(product.name)
-                    updateDesc(String.format("%1s\n%2s", product.size, product.colour))
-                    updateImage(product.category.icon)
+                updatePrice(product.price)
+                updateName(product.name)
+                updateDesc(String.format("%1s\n%2s", product.size, product.colour))
+                updateImage(product.category.icon)
 
+                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                    val checker = parentInterface.getFavByID(product.id).first() == null
+                    withContext(Dispatchers.Main) {
+                        setButtonStyle(!checker)
+                    }
+                }
+
+                itemView.setOnClickListener {
                     parentFragment.lifecycleScope.launch(Dispatchers.IO) {
                         val checker = parentInterface.getFavByID(product.id).first() == null
                         withContext(Dispatchers.Main) {
-                            setButtonStyle(!checker)
-                        }
-                    }
-
-                    itemView.setOnClickListener {
-                        parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                            val checker = parentInterface.getFavByID(product.id).first() == null
-                            withContext(Dispatchers.Main) {
-                                if (parentFragment is MainFragment) navController.navigate(
-                                    MainFragmentDirections.actionMainFragmentToDescFragment(
-                                        product.id,
-                                        !checker
-                                    )
+                            if (parentFragment is MainFragment) navController.navigate(
+                                MainFragmentDirections.actionMainFragmentToDescFragment(
+                                    product.id,
+                                    !checker
                                 )
-                                if (parentFragment is FavoriteFragment) navController.navigate(
-                                    FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
-                                        product.id,
-                                        !checker
-                                    )
-                                )
-                            }
-                        }
-                    }
-
-                    fabInCart.setOnClickListener {
-                        parentInterface.addToCart(product)
-                        Toast.makeText(
-                            context,
-                            "${product.name} has been added to cart!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    fabFavorite.setOnClickListener {
-                        parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                            Log.d(
-                                LOG_DEBUG,
-                                parentInterface.getFavByID(product.id).first()?.toString()
-                                    ?: "Not found with ${product.id}"
                             )
-                            with(parentInterface.getFavByID(product.id).first() == null) {
-                                if (this) parentInterface.insertFav(product)
-                                else parentInterface.deleteFav(product)
-                                withContext(Dispatchers.Main) {
-                                    setButtonStyle(this@with)
-                                }
+                            if (parentFragment is FavoriteFragment) navController.navigate(
+                                FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
+                                    product.id,
+                                    !checker
+                                )
+                            )
+                        }
+                    }
+                }
+
+                fabInCart.setOnClickListener {
+                    parentInterface.addToCart(product)
+                    Toast.makeText(
+                        context,
+                        "${product.name} has been added to cart!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                fabFavorite.setOnClickListener {
+                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                        Log.d(
+                            LOG_DEBUG,
+                            parentInterface.getFavByID(product.id).first()?.toString()
+                                ?: "Not found with ${product.id}"
+                        )
+                        with(parentInterface.getFavByID(product.id).first() == null) {
+                            if (this) parentInterface.insertFav(product)
+                            else parentInterface.deleteFav(product)
+                            withContext(Dispatchers.Main) {
+                                setButtonStyle(this@with)
                             }
                         }
                     }
                 }
             }
+        }
 
         override fun updatePrice(price: Int) {
             view.apply {
@@ -258,66 +272,67 @@ class MainRecyclerAdapter(
     inner class InnerGridViewHolder(private val view: MainAdapterGridBinding) :
         ViewBindingViewHolder(view.root) {
         override fun bind(item: ProductUIModel) {
-                val product = item.product
-                view.apply {
+            val product = item.product
+            view.apply {
 
-                    updatePrice(product.price)
-                    updateDesc(String.format("%1s\n%2s", product.size, product.colour))
-                    updateImage(product.category.icon)
+                updatePrice(product.price)
+                updateName(product.name)
+                updateDesc(String.format("%1s\n%2s", product.size, product.colour))
+                updateImage(product.category.icon)
 
+                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                    val checker = parentInterface.getFavByID(product.id).first() == null
+                    withContext(Dispatchers.Main) {
+                        setButtonStyle(!checker)
+                    }
+                }
+
+                itemView.setOnClickListener {
                     parentFragment.lifecycleScope.launch(Dispatchers.IO) {
                         val checker = parentInterface.getFavByID(product.id).first() == null
                         withContext(Dispatchers.Main) {
-                            setButtonStyle(!checker)
-                        }
-                    }
-
-                    itemView.setOnClickListener {
-                        parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                            val checker = parentInterface.getFavByID(product.id).first() == null
-                            withContext(Dispatchers.Main) {
-                                if (parentFragment is MainFragment) navController.navigate(
-                                    MainFragmentDirections.actionMainFragmentToDescFragment(
-                                        product.id,
-                                        !checker
-                                    )
+                            if (parentFragment is MainFragment) navController.navigate(
+                                MainFragmentDirections.actionMainFragmentToDescFragment(
+                                    product.id,
+                                    !checker
                                 )
-                                if (parentFragment is FavoriteFragment) navController.navigate(
-                                    FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
-                                        product.id,
-                                        !checker
-                                    )
-                                )
-                            }
-                        }
-                    }
-
-                    fabInCart.setOnClickListener {
-                        parentInterface.addToCart(product)
-                        Toast.makeText(
-                            context,
-                            "${product.name} has been added to cart!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    fabFavorite.setOnClickListener {
-                        parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                            Log.d(
-                                LOG_DEBUG,
-                                parentInterface.getFavByID(product.id).first()?.toString()
-                                    ?: "Not found with ${product.id}"
                             )
-                            with(parentInterface.getFavByID(product.id).first() == null) {
-                                if (this) parentInterface.insertFav(product)
-                                else parentInterface.deleteFav(product)
-                                withContext(Dispatchers.Main) {
-                                    setButtonStyle(this@with)
-                                }
+                            if (parentFragment is FavoriteFragment) navController.navigate(
+                                FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
+                                    product.id,
+                                    !checker
+                                )
+                            )
+                        }
+                    }
+                }
+
+                fabInCart.setOnClickListener {
+                    parentInterface.addToCart(product)
+                    Toast.makeText(
+                        context,
+                        "${product.name} has been added to cart!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                fabFavorite.setOnClickListener {
+                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
+                        Log.d(
+                            LOG_DEBUG,
+                            parentInterface.getFavByID(product.id).first()?.toString()
+                                ?: "Not found with ${product.id}"
+                        )
+                        with(parentInterface.getFavByID(product.id).first() == null) {
+                            if (this) parentInterface.insertFav(product)
+                            else parentInterface.deleteFav(product)
+                            withContext(Dispatchers.Main) {
+                                setButtonStyle(this@with)
                             }
                         }
                     }
                 }
+            }
         }
 
         override fun updatePrice(price: Int) {
@@ -384,6 +399,4 @@ class MainRecyclerAdapter(
     }
 }
 
-sealed class ProductPayloads : Payloadable {
-    data class PriceChanged(val price: Int) : ProductPayloads()
-}
+
