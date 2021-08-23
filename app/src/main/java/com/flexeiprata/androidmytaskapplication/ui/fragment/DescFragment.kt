@@ -79,8 +79,7 @@ class DescFragment : Fragment() {
                         withContext(Dispatchers.Main) {
                             item.setIcon(R.drawable.ns_favorite_full)
                         }
-                    }
-                    else {
+                    } else {
                         viewModel.deleteFav(product)
                         withContext(Dispatchers.Main) {
                             item.setIcon(R.drawable.ns_like)
@@ -106,7 +105,8 @@ class DescFragment : Fragment() {
                             }
                         }
                         Status.ERROR -> {
-                            Toast.makeText(requireContext(), "Loading Error", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Loading Error", Toast.LENGTH_SHORT)
+                                .show()
                         }
                         Status.LOADING -> {
                         }
@@ -136,7 +136,11 @@ class DescFragment : Fragment() {
 
             buttonAddToCard.setOnClickListener {
                 viewModel.addToCart(product)
-                Toast.makeText(context, "${product.name} has been added to cart!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "${product.name} has been added to cart!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
 

@@ -2,7 +2,6 @@ package com.flexeiprata.androidmytaskapplication.data.modules
 
 import com.flexeiprata.androidmytaskapplication.data.api.ApiHelper
 import com.flexeiprata.androidmytaskapplication.data.api.ApiService
-import com.flexeiprata.androidmytaskapplication.data.api.RetrofitBuilder
 import com.flexeiprata.androidmytaskapplication.utils.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -18,14 +17,14 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit() = Retrofit.Builder()
+    fun provideRetrofit(): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit) = retrofit.create(ApiService::class.java)
+    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 
     @Provides
     @Singleton

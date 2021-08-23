@@ -2,7 +2,6 @@ package com.flexeiprata.androidmytaskapplication.ui.fragment
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -10,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.map
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
@@ -19,7 +17,6 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -132,13 +129,10 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
 
 
     private fun setupObservers() {
-
-
         viewModel.getCart().observe(
             viewLifecycleOwner,
             Observer { binding.textViewCartSize.text = it.size.toString() }
         )
-
 
         viewModel.listData.observe(
             viewLifecycleOwner,
@@ -148,8 +142,6 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 }
             }
         )
-
-
     }
 
     private fun setRecyclerViewUI() {
@@ -165,7 +157,6 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                     View.VISIBLE
                 else View.INVISIBLE
         }
-
     }
 
 

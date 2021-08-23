@@ -8,7 +8,7 @@ import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 import com.google.gson.annotations.SerializedName
 
 @Entity
-    data class Product(
+data class Product(
     @Embedded val category: Category,
     val colour: String,
     val details: String,
@@ -22,23 +22,21 @@ import com.google.gson.annotations.SerializedName
     @PrimaryKey(autoGenerate = true) val roomId: Int
 )
 
-interface Item{
-    fun isItemTheSame(other : Item) : Boolean
-    fun isContentTheSame(other: Item) : Boolean
-    fun payloads(other: Item) : List<Payloadable>
-}
-
 data class ProductUIModel(val product: Product) : Item {
     override fun isItemTheSame(other: Item): Boolean {
-        return if(other is ProductUIModel){
+        return if (other is ProductUIModel) {
             product.id == other.product.id
         } else
             false
     }
 
     override fun isContentTheSame(other: Item): Boolean {
-        return if(other is ProductUIModel){
-            product.price == other.product.price && product.name == other.product.name
+        return if (other is ProductUIModel) {
+            product.price == other.product.price &&
+                    product.name == other.product.name &&
+                    product.colour == other.product.colour &&
+                    product.size == other.product.size &&
+                    product.category.icon == other.product.category.icon
         } else {
             false
         }
@@ -46,7 +44,7 @@ data class ProductUIModel(val product: Product) : Item {
 
     override fun payloads(other: Item): List<Payloadable> {
         val payloads = mutableListOf<Payloadable>()
-        if(other is ProductUIModel){
+        if (other is ProductUIModel) {
             if (product.price != other.product.price)
                 payloads.add(ProductPayloads.PriceChanged(other.product.price))
             if (product.name != other.product.name)

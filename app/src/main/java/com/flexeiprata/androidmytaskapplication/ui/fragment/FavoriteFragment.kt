@@ -80,7 +80,6 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 binding.textViewCartSize.text = it.size.toString()
             }
         )
-
         viewModel.getAllFav().observe(
             viewLifecycleOwner,
             {
@@ -89,7 +88,6 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 viewModel.actualizeData(it)
             }
         )
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -25,8 +25,8 @@ class MainViewModel @Inject constructor(
     val listData = Pager(PagingConfig(PAGE_SIZE)) {
         MainDataSource(repository)
     }
-        .liveData.cachedIn(viewModelScope).map {pagingData ->
-            pagingData.map {product->
+        .liveData.cachedIn(viewModelScope).map { pagingData ->
+            pagingData.map { product ->
                 ProductUIModel(product)
             }
         }

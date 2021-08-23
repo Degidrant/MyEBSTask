@@ -20,7 +20,6 @@ class FavViewModel @Inject constructor(
 
     fun getAllFav() = repository.getAllFav().asLiveData()
 
-
     fun insertFav(fav: Product) = viewModelScope.launch {
         repository.insertFav(fav)
     }
@@ -46,8 +45,7 @@ class FavViewModel @Inject constructor(
             try {
                 it.price = apiHelper.getProductById(it.id).price
                 repository.actualizePrice(it.price, it.id)
-            }
-            catch (ex: Exception){
+            } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }

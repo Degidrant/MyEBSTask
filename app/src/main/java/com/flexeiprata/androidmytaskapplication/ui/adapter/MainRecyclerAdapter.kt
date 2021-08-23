@@ -189,11 +189,6 @@ class MainRecyclerAdapter(
 
                 fabFavorite.setOnClickListener {
                     parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                        Log.d(
-                            LOG_DEBUG,
-                            parentInterface.getFavByID(product.id).first()?.toString()
-                                ?: "Not found with ${product.id}"
-                        )
                         with(parentInterface.getFavByID(product.id).first() == null) {
                             if (this) parentInterface.insertFav(product)
                             else parentInterface.deleteFav(product)
@@ -318,11 +313,6 @@ class MainRecyclerAdapter(
 
                 fabFavorite.setOnClickListener {
                     parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                        Log.d(
-                            LOG_DEBUG,
-                            parentInterface.getFavByID(product.id).first()?.toString()
-                                ?: "Not found with ${product.id}"
-                        )
                         with(parentInterface.getFavByID(product.id).first() == null) {
                             if (this) parentInterface.insertFav(product)
                             else parentInterface.deleteFav(product)
