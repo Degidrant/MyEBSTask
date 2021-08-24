@@ -8,12 +8,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
+import com.flexeiprata.androidmytaskapplication.ui.adapter.DescUIRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
 import com.flexeiprata.androidmytaskapplication.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,9 +49,6 @@ class DescFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            scroller.visibility = View.INVISIBLE
-        }
         setupObservers()
         (activity as MainActivity).supportActionBar?.let {
             it.apply {
@@ -58,6 +56,14 @@ class DescFragment : Fragment() {
                 setHomeAsUpIndicator(R.drawable.ns_arrow_back)
                 setDisplayHomeAsUpEnabled(true)
             }
+        }
+        binding.buttonAddToCard.setOnClickListener {
+            viewModel.addToCart(product)
+            Toast.makeText(
+                requireContext(),
+                "${product.name} has been added to cart!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -101,7 +107,6 @@ class DescFragment : Fragment() {
                         Status.SUCCESS -> {
                             it.data?.let { productData ->
                                 updateUI(productData)
-                                binding.scroller.visibility = View.VISIBLE
                             }
                         }
                         Status.ERROR -> {
@@ -119,31 +124,16 @@ class DescFragment : Fragment() {
     private fun updateUI(product: Product) {
         binding.apply {
             this@DescFragment.product = product
-            textViewName.text = product.name
-            textViewDesc.text = String.format("%1s\n%2s", product.size, product.colour)
-            val pricePlace = String.format("$%d,-", product.price)
-            textViewPrice.text = pricePlace
-            textViewPriceSmall.text = pricePlace
-            textViewFullDesc.text = product.details
-            lifecycleScope.launch(Dispatchers.IO) {
-                val glide = Glide.with(mainPhotoImage.context)
-                    .load(product.category.icon)
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                withContext(Dispatchers.Main) {
-                    glide.into(mainPhotoImage)
-                }
+            recyclerUIDesc.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = DescUIRecyclerAdapter(product, this@DescFragment)
+                addItemDecoration(
+                    DividerItemDecoration(
+                        requireContext(),
+                        DividerItemDecoration.VERTICAL
+                    )
+                )
             }
-
-            buttonAddToCard.setOnClickListener {
-                viewModel.addToCart(product)
-                Toast.makeText(
-                    context,
-                    "${product.name} has been added to cart!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-
         }
     }
 

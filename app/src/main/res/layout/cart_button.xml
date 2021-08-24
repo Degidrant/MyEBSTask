@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cartButtonBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/my_cart"
+        app:shapeAppearanceOverlay="@style/fab_semi_square"
+        app:backgroundTint="@color/purple"
+        android:fontFamily="@font/open_sans_bold_light"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/dividerBodyIcon"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_33sdp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/white"
+        android:translationZ="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cartButtonBody"
+        app:layout_constraintStart_toStartOf="@+id/cartButtonBody"
+        app:layout_constraintTop_toTopOf="@+id/cartButtonBody" />
+
+    <TextView
+        android:id="@+id/textViewCartSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:layout_marginEnd="@dimen/_7sdp"
+        android:layout_marginBottom="@dimen/_7sdp"
+        android:background="@drawable/circle"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        android:fontFamily="@font/open_sans_bold_light"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cartButtonBody"
+        app:layout_constraintEnd_toEndOf="@+id/cartButtonBody"
+        app:layout_constraintStart_toEndOf="@+id/dividerBodyIcon2"
+        app:layout_constraintTop_toTopOf="@+id/cartButtonBody" />
+
+    <View
+        android:id="@+id/dividerBodyIcon2"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_33sdp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/white"
+        android:translationZ="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cartButtonBody"
+        app:layout_constraintEnd_toEndOf="@+id/cartButtonBody"
+        app:layout_constraintTop_toTopOf="@+id/cartButtonBody" />
+
+    <ImageView
+        android:id="@+id/imageViewCartIcon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/_9sdp"
+        android:layout_marginTop="@dimen/_9sdp"
+        android:layout_marginEnd="@dimen/_9sdp"
+        android:layout_marginBottom="@dimen/_9sdp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cartButtonBody"
+        app:layout_constraintEnd_toStartOf="@+id/dividerBodyIcon"
+        app:layout_constraintStart_toStartOf="@+id/cartButtonBody"
+        app:layout_constraintTop_toTopOf="@+id/cartButtonBody"
+        app:tint="@color/white" />
+
+</merge>

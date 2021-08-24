@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
@@ -69,6 +70,7 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 viewModel.clearCart()
                 Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
             }
+            cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
         }
     }
 
@@ -131,7 +133,7 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private fun setupObservers() {
         viewModel.getCart().observe(
             viewLifecycleOwner,
-            Observer { binding.textViewCartSize.text = it.size.toString() }
+            Observer { binding.cartButton.setCounter(it.size)}
         )
 
         viewModel.listData.observe(

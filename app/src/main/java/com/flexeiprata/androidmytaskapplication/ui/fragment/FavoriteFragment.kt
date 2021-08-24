@@ -3,6 +3,7 @@ package com.flexeiprata.androidmytaskapplication.ui.fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -71,13 +72,14 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 }
             )
         }
+        binding.cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
     }
 
     private fun setupObservers() {
         viewModel.getCart().observe(
             viewLifecycleOwner,
             {
-                binding.textViewCartSize.text = it.size.toString()
+                binding.cartButton.setCounter(it.size)
             }
         )
         viewModel.getAllFav().observe(
