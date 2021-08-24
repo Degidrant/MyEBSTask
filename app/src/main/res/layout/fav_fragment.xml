@@ -15,7 +15,7 @@
         android:textSize="@dimen/_16ssp"
         app:layout_constraintBottom_toTopOf="@+id/divider7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/mainToolbar" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -48,9 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_35sdp"
         android:text="@string/sort_by"
-        app:layout_constraintBottom_toTopOf="@+id/divider7"
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView3" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -70,7 +70,7 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="@+id/imageView4"
         app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/mainToolbar"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiper"
@@ -97,14 +97,24 @@
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_30sdp"
-        android:text="@string/my_cart"
         app:shapeAppearanceOverlay="@style/fab_semi_square"
-        android:textSize="@dimen/_10ssp"
         app:backgroundTint="@color/purple"
         app:layout_constraintBottom_toBottomOf="@+id/swiper"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:leftIcon="@drawable/ns_cart_empty"
+        app:mainText="@string/my_cart" />
 
+    <com.flexeiprata.androidmytaskapplication.ui.base.MainCustomToolbar
+        android:id="@+id/mainToolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:homeIcon="@drawable/ns_arrow_back"
+        app:centralPicture="@drawable/iconic"
+        app:optionIcon="@drawable/ns_favorite_full"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

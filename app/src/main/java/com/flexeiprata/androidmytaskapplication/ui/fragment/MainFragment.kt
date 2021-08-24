@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
@@ -12,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
@@ -21,6 +19,10 @@ import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import android.view.animation.LinearInterpolator
+
+import androidx.recyclerview.widget.RecyclerView
+
 
 @AndroidEntryPoint
 class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
@@ -32,12 +34,6 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private lateinit var adapter: MainRecyclerAdapter
 
     private lateinit var magicLinearManager: GridLayoutManager
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,13 +48,7 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
         magicLinearManager = GridLayoutManager(requireContext(), 1)
         setRecyclerViewUI()
         setupObservers()
-        (activity as MainActivity).supportActionBar?.let {
-            it.apply {
-                title = ""
-                setHomeAsUpIndicator(R.drawable.ns_profile)
-                setDisplayHomeAsUpEnabled(true)
-            }
-        }
+
         binding.apply {
             fabColumnStyle.setOnClickListener {
                 switchLayoutManager(true)
@@ -70,25 +60,11 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 viewModel.clearCart()
                 Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
             }
-            cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_favourite -> {
+            //cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
+            mainCustomToolbar.setOptionOnClickListener {
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToFavoriteFragment())
             }
-            else -> {
-                //profile
-            }
         }
-        return true
     }
 
     private fun switchLayoutManager(isLinear: Boolean) {
@@ -133,7 +109,7 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private fun setupObservers() {
         viewModel.getCart().observe(
             viewLifecycleOwner,
-            Observer { binding.cartButton.setCounter(it.size)}
+            Observer { binding.cartButton.setCounter(it.size) }
         )
 
         viewModel.listData.observe(

@@ -15,7 +15,7 @@ import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBi
 
 class DescUIRecyclerAdapter(
     private val product: Product,
-    private val controller: Fragment,
+    private val controller: Fragment
 ) :
     RecyclerView.Adapter<DescUIRecyclerAdapter.BasicViewBindingViewHolder>() {
 

@@ -31,11 +31,6 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private val viewModel: FavViewModel by viewModels()
     private lateinit var adapter: MainRecyclerAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,13 +43,6 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerViewUI()
         setupObservers()
-        (activity as MainActivity).supportActionBar?.let {
-            it.apply {
-                title = ""
-                setHomeAsUpIndicator(R.drawable.ns_arrow_back)
-                setDisplayHomeAsUpEnabled(true)
-            }
-        }
         binding.cartButton.setOnClickListener {
             viewModel.clearCart()
             Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
@@ -72,7 +60,10 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 }
             )
         }
-        binding.cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
+        //binding.cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
+        binding.mainToolbar.setHomeOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     private fun setupObservers() {
@@ -90,23 +81,6 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 viewModel.actualizeData(it)
             }
         )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu_favorite, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_favourite -> {
-
-            }
-            else -> {
-                findNavController().popBackStack()
-            }
-        }
-        return true
     }
 
     private fun updateAdapter(dataList: List<Product>) {

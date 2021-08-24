@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MainCustomToolbar">
+        <attr name="homeIcon" format="reference" />
+        <attr name="secondHomeIcon" format="reference" />
+        <attr name="optionIcon" format="reference"/>
+        <attr name="centralPicture" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CartButtonView">
+        <attr name="mainText" format="reference"/>
+        <attr name="leftIcon" format="reference"/>
+    </declare-styleable>
+    
+</resources>

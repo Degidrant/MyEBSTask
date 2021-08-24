@@ -15,12 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setToolbar()
         setNavGraph()
-    }
-
-    private fun setToolbar() {
-        setSupportActionBar(findViewById(R.id.toolbar))
     }
 
     private fun setNavGraph() {

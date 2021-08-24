@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cartButtonBody"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/my_cart"
-        app:shapeAppearanceOverlay="@style/fab_semi_square"
-        app:backgroundTint="@color/purple"
-        android:fontFamily="@font/open_sans_bold_light"
         android:clickable="false"
         android:focusable="false"
+        android:insetTop="0dp"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:textSize="@dimen/_10ssp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@color/purple"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/fab_semi_square" />
 
     <View
         android:id="@+id/dividerBodyIcon"
@@ -74,4 +77,4 @@
         app:layout_constraintTop_toTopOf="@+id/cartButtonBody"
         app:tint="@color/white" />
 
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>

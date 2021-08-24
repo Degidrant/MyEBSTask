@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.flexeiprata.androidmytaskapplication.MainActivity
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
@@ -34,10 +33,6 @@ class DescFragment : Fragment() {
 
     private lateinit var product: Product
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,13 +45,6 @@ class DescFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
-        (activity as MainActivity).supportActionBar?.let {
-            it.apply {
-                title = ""
-                setHomeAsUpIndicator(R.drawable.ns_arrow_back)
-                setDisplayHomeAsUpEnabled(true)
-            }
-        }
         binding.buttonAddToCard.setOnClickListener {
             viewModel.addToCart(product)
             Toast.makeText(
@@ -65,37 +53,32 @@ class DescFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (!args.isFav) inflater.inflate(R.menu.main_menu, menu)
-        else inflater.inflate(R.menu.main_menu_favorite, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_favourite -> {
+        binding.apply {
+            val image =
+                if (args.isFav) R.drawable.ns_favorite_full
+                else R.drawable.ns_like
+            mainToolbar.setOptionImage(image)
+            mainToolbar.setOptionOnClickListener {
                 lifecycleScope.launch(Dispatchers.IO) {
                     val checker = viewModel.getFavById(product.id).first() == null
                     if (checker) {
                         viewModel.insertFav(product)
                         withContext(Dispatchers.Main) {
-                            item.setIcon(R.drawable.ns_favorite_full)
+                            mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
                         }
                     } else {
                         viewModel.deleteFav(product)
                         withContext(Dispatchers.Main) {
-                            item.setIcon(R.drawable.ns_like)
+                            mainToolbar.setOptionImage(R.drawable.ns_like)
                         }
                     }
                 }
             }
-            else -> findNavController().popBackStack()
+            mainToolbar.setHomeOnClickListener {
+                findNavController().popBackStack()
+            }
         }
-        return true
+
     }
 
     private fun setupObservers() {
