@@ -1,9 +1,9 @@
 package com.flexeiprata.androidmytaskapplication.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -11,16 +11,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import com.flexeiprata.androidmytaskapplication.MainActivity
-import com.flexeiprata.androidmytaskapplication.R
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.FavViewModel
+import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
@@ -29,7 +29,15 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private val binding get() = _binding!!
 
     private val viewModel: FavViewModel by viewModels()
-    private lateinit var adapter: MainRecyclerAdapter
+    private var adapter: MainRecyclerAdapter = MainRecyclerAdapter(this) { 1 }
+    private var mainList = listOf<Product>()
+    private var isRefresh = false
+    private lateinit var refresher: SwipeRefreshLayout.OnRefreshListener
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isRefresh = true
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,20 +55,16 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             viewModel.clearCart()
             Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
         }
-        binding.swiper.setOnRefreshListener {
-            val refresher = viewModel.getAllFav()
-            refresher.observe(
-                viewLifecycleOwner,
-                {
-                    viewModel.actualizeData(it).invokeOnCompletion { _ ->
-                        updateAdapter(it)
-                        binding.swiper.isRefreshing = false
-                        refresher.removeObservers(viewLifecycleOwner)
-                    }
+        refresher = SwipeRefreshLayout.OnRefreshListener{
+            lifecycleScope.launch {
+                viewModel.actualizeData(mainList)
+                withContext(Dispatchers.Main) {
+                    binding.swiper.isRefreshing = false
                 }
-            )
+            }
         }
-        //binding.cartButton.setIcon(AppCompatResources.getDrawable(requireContext(), R.drawable.ns_cart_empty))
+        binding.swiper.setOnRefreshListener(refresher)
+
         binding.mainToolbar.setHomeOnClickListener {
             findNavController().popBackStack()
         }
@@ -77,8 +81,8 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             viewLifecycleOwner,
             {
                 updateAdapter(it)
+                mainList = it
                 binding.favCountText.text = it.size.toString()
-                viewModel.actualizeData(it)
             }
         )
     }
@@ -86,8 +90,17 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
     private fun updateAdapter(dataList: List<Product>) {
         adapter.apply {
             lifecycleScope.launch {
+                if (isRefresh) {
+                    binding.swiper.post {
+                        binding.swiper.isRefreshing = true
+                        refresher.onRefresh()
+                    }
+                    isRefresh = false
+                }
+                Log.d(LOG_DEBUG, "Here is updater UI")
                 submitData(PagingData.from(dataList.map {
-                    ProductUIModel(it)
+                    Log.d(LOG_DEBUG, "${it.name}: $${it.price}")
+                    ProductUIModel(it, true)
                 }))
             }
         }
@@ -96,7 +109,6 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
 
     private fun setRecyclerViewUI() {
         val magicLayoutManager = GridLayoutManager(requireContext(), 1)
-        adapter = MainRecyclerAdapter(this, findNavController(), magicLayoutManager)
         binding.mainRV.apply {
             layoutManager = magicLayoutManager
             adapter = this@FavoriteFragment.adapter
@@ -118,10 +130,22 @@ class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
         viewModel.insertFav(fav)
     }
 
-    override fun getFavByID(id: Int): Flow<Product?> = viewModel.getFavById(id)
-
     override fun addToCart(product: Product) {
         viewModel.addToCart(product)
+    }
+
+    override fun navigateToNext(id: Int) {
+        lifecycleScope.launch {
+            val fav = viewModel.getFavById(id).first() != null
+            withContext(Dispatchers.Main) {
+                findNavController().navigate(
+                    FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
+                        id,
+                        fav
+                    )
+                )
+            }
+        }
     }
 
 }

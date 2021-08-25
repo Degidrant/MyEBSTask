@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("/products")
-    suspend fun getProducts(@Query("page") page : Int, @Query("page_size") pageSize: Int): Response<JsonData>
+    suspend fun getProducts(@Query("page") page : Int, @Query("page_size") pageSize: Int, @Query("search") text: String): Response<JsonData>
 
     @GET("/products/{idp}")
     suspend fun getProductById(@Path("idp") id : Int) : Product

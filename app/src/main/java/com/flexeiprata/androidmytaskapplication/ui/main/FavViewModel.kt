@@ -1,12 +1,15 @@
 package com.flexeiprata.androidmytaskapplication.ui.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.flexeiprata.androidmytaskapplication.data.api.ApiHelper
 import com.flexeiprata.androidmytaskapplication.data.models.Product
+import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
+import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,11 +43,24 @@ class FavViewModel @Inject constructor(
         cartRepository.addToCart(product)
     }
 
+    /*fun actualizeData(list: List<Product>) = viewModelScope.launch {
+        list.forEach {
+            try {
+                val price = apiHelper.getProductById(it.id).price
+                if (price != it.price) repository.actualizePrice(price, it.id)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+    }*/
+
     fun actualizeData(list: List<Product>) = viewModelScope.launch {
         list.forEach {
             try {
-                it.price = apiHelper.getProductById(it.id).price
-                repository.actualizePrice(it.price, it.id)
+                val product = apiHelper.getProductById(it.id)
+                val comparator = ProductUIModel(product, true).isContentTheSame(ProductUIModel(it, true))
+                Log.d(LOG_DEBUG, "Comparator ${product.name} = $comparator")
+                if (!comparator) repository.actualize(product)
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }

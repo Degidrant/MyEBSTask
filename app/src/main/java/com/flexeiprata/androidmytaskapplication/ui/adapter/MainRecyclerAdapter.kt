@@ -9,11 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,21 +21,11 @@ import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterGridBinding
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
-import com.flexeiprata.androidmytaskapplication.ui.fragment.FavoriteFragment
-import com.flexeiprata.androidmytaskapplication.ui.fragment.FavoriteFragmentDirections
-import com.flexeiprata.androidmytaskapplication.ui.fragment.MainFragment
-import com.flexeiprata.androidmytaskapplication.ui.fragment.MainFragmentDirections
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainRecyclerAdapter(
     val parentFragment: Fragment,
-    val navController: NavController,
-    var thisLayoutManager: GridLayoutManager
+    private val spanCountChecker: (Unit) -> Int // Prosto po prikolu, chtob posmotreti kak rabotaiet
 ) : PagingDataAdapter<ProductUIModel, MainRecyclerAdapter.ViewBindingViewHolder>(MainDiffUtil) {
 
     private lateinit var context: Context
@@ -47,8 +34,8 @@ class MainRecyclerAdapter(
     interface FavoriteSwitch {
         fun deleteFav(fav: Product)
         fun insertFav(fav: Product)
-        fun getFavByID(id: Int): Flow<Product?>
         fun addToCart(product: Product)
+        fun navigateToNext(id: Int)
     }
 
     override fun onCreateViewHolder(
@@ -83,6 +70,7 @@ class MainRecyclerAdapter(
             payloads.forEach { payloadList ->
                 if (payloadList is List<*>) {
                     (payloadList as List<Payloadable>).forEach { payload ->
+                        Log.d(LOG_DEBUG, "Here is a payload")
                         when (payload) {
                             is ProductPayloads.PriceChanged -> holder.updatePrice(payload.price)
                             is ProductPayloads.DescChanged -> holder.updateDesc(
@@ -94,6 +82,7 @@ class MainRecyclerAdapter(
                             )
                             is ProductPayloads.PicChanged -> holder.updateImage(payload.url)
                             is ProductPayloads.NameChanged -> holder.updateName(payload.name)
+                            is ProductPayloads.FavChanged -> holder.updateButton(payload.isFav)
                         }
                     }
                 }
@@ -111,6 +100,7 @@ class MainRecyclerAdapter(
         abstract fun updateName(name: String)
         abstract fun updateImage(url: String)
         abstract fun updateDesc(desc: String)
+        abstract fun updateButton(fav: Boolean)
     }
 
     object MainDiffUtil : DiffUtil.ItemCallback<ProductUIModel>() {
@@ -137,8 +127,9 @@ class MainRecyclerAdapter(
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (thisLayoutManager.spanCount == 1) 1 else 2
+        return spanCountChecker.invoke(Unit)
     }
+
 
     inner class InnerViewHolder(private val view: MainAdapterBinding) :
         ViewBindingViewHolder(view.root) {
@@ -150,32 +141,10 @@ class MainRecyclerAdapter(
                 updateName(product.name)
                 updateDesc(String.format("%1s\n%2s", product.size, product.colour))
                 updateImage(product.category.icon)
-
-                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                    val checker = parentInterface.getFavByID(product.id).first() == null
-                    withContext(Dispatchers.Main) {
-                        setButtonStyle(!checker)
-                    }
-                }
+                updateButton(item.isFav)
 
                 itemView.setOnClickListener {
-                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                        val checker = parentInterface.getFavByID(product.id).first() == null
-                        withContext(Dispatchers.Main) {
-                            if (parentFragment is MainFragment) navController.navigate(
-                                MainFragmentDirections.actionMainFragmentToDescFragment(
-                                    product.id,
-                                    !checker
-                                )
-                            )
-                            if (parentFragment is FavoriteFragment) navController.navigate(
-                                FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
-                                    product.id,
-                                    !checker
-                                )
-                            )
-                        }
-                    }
+                    parentInterface.navigateToNext(product.id)
                 }
 
                 fabInCart.setOnClickListener {
@@ -188,14 +157,11 @@ class MainRecyclerAdapter(
                 }
 
                 fabFavorite.setOnClickListener {
-                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                        with(parentInterface.getFavByID(product.id).first() == null) {
-                            if (this) parentInterface.insertFav(product)
-                            else parentInterface.deleteFav(product)
-                            withContext(Dispatchers.Main) {
-                                setButtonStyle(this@with)
-                            }
-                        }
+                    with(!item.isFav) {
+                        if (this) parentInterface.insertFav(product)
+                        else parentInterface.deleteFav(product)
+                        updateButton(this)
+                        item.isFav = !item.isFav
                     }
                 }
             }
@@ -231,9 +197,9 @@ class MainRecyclerAdapter(
             }
         }
 
-        private fun setButtonStyle(setter: Boolean) {
+        override fun updateButton(fav: Boolean) {
             view.apply {
-                if (setter) {
+                if (fav) {
                     fabFavorite.apply {
                         setImageDrawable(
                             ContextCompat.getDrawable(
@@ -274,32 +240,10 @@ class MainRecyclerAdapter(
                 updateName(product.name)
                 updateDesc(String.format("%1s\n%2s", product.size, product.colour))
                 updateImage(product.category.icon)
-
-                parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                    val checker = parentInterface.getFavByID(product.id).first() == null
-                    withContext(Dispatchers.Main) {
-                        setButtonStyle(!checker)
-                    }
-                }
+                updateButton(item.isFav)
 
                 itemView.setOnClickListener {
-                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                        val checker = parentInterface.getFavByID(product.id).first() == null
-                        withContext(Dispatchers.Main) {
-                            if (parentFragment is MainFragment) navController.navigate(
-                                MainFragmentDirections.actionMainFragmentToDescFragment(
-                                    product.id,
-                                    !checker
-                                )
-                            )
-                            if (parentFragment is FavoriteFragment) navController.navigate(
-                                FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
-                                    product.id,
-                                    !checker
-                                )
-                            )
-                        }
-                    }
+                    parentInterface.navigateToNext(product.id)
                 }
 
                 fabInCart.setOnClickListener {
@@ -312,14 +256,11 @@ class MainRecyclerAdapter(
                 }
 
                 fabFavorite.setOnClickListener {
-                    parentFragment.lifecycleScope.launch(Dispatchers.IO) {
-                        with(parentInterface.getFavByID(product.id).first() == null) {
-                            if (this) parentInterface.insertFav(product)
-                            else parentInterface.deleteFav(product)
-                            withContext(Dispatchers.Main) {
-                                setButtonStyle(this@with)
-                            }
-                        }
+                    with(!item.isFav) {
+                        if (this) parentInterface.insertFav(product)
+                        else parentInterface.deleteFav(product)
+                        updateButton(this)
+                        item.isFav = !item.isFav
                     }
                 }
             }
@@ -355,9 +296,9 @@ class MainRecyclerAdapter(
             }
         }
 
-        private fun setButtonStyle(setter: Boolean) {
+        override fun updateButton(fav: Boolean) {
             view.apply {
-                if (setter) {
+                if (fav) {
                     fabFavorite.apply {
                         setImageDrawable(
                             ContextCompat.getDrawable(

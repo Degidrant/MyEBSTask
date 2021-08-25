@@ -1,92 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.MainFragment">
 
-    <com.flexeiprata.androidmytaskapplication.ui.base.MainCustomToolbar
-        android:id="@+id/mainCustomToolbar"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:homeIcon="@drawable/ns_profile"
-        app:centralPicture="@drawable/iconic"
-        app:optionIcon="@drawable/ns_like"/>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".ui.fragment.MainFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/collapser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:fitsSystemWindows="true">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_50sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:background="@drawable/search_shape"
+                    android:drawableStart="@drawable/ns_search"
+                    android:fontFamily="@font/open_sans_bold_light"
+                    android:hint="Search"
+                    android:includeFontPadding="false"
+                    android:drawablePadding="@dimen/_9sdp"
+                    android:inputType="textCapWords"
+                    android:paddingStart="@dimen/_8sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/lost_gray"
+                    android:textSize="@dimen/_16ssp"
+                    app:layout_collapseMode="none" />
+
+                <com.flexeiprata.androidmytaskapplication.ui.base.MainCustomToolbar
+                    android:id="@+id/mainCustomToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:homeIcon="@drawable/ns_profile"
+                    app:centralPicture="@drawable/iconic"
+                    app:optionIcon="@drawable/ns_like"
+                    app:layout_collapseMode="pin"
+                    />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:translationZ="-10dp"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"/>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <ImageView
+                    android:id="@+id/filterButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:src="@drawable/ns_filter"
+                    app:layout_constraintBottom_toTopOf="@+id/divider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    style="@style/MinorColorText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/filters"
+                    app:layout_constraintBottom_toBottomOf="@+id/filterButton"
+                    app:layout_constraintStart_toEndOf="@+id/filterButton"
+                    app:layout_constraintTop_toTopOf="@+id/filterButton" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabSquareStyle"
+                    style="@style/fab_square_unfocused"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:adjustViewBounds="false"
+                    android:clickable="true"
+                    android:contextClickable="false"
+                    android:cropToPadding="false"
+                    android:src="@drawable/ns_grid"
+                    app:layout_constraintBottom_toBottomOf="@+id/fabColumnStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/fabColumnStyle" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabColumnStyle"
+                    style="@style/fab_square_focused"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:src="@drawable/ns_rows"
+                    app:layout_constraintBottom_toBottomOf="@+id/filterButton"
+                    app:layout_constraintEnd_toStartOf="@+id/fabSquareStyle"
+                    app:layout_constraintTop_toTopOf="@+id/filterButton" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_60sdp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintEnd_toEndOf="@+id/fabSquareStyle"
+                    app:layout_constraintStart_toStartOf="@+id/filterButton"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/mainRV"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/_20sdp"
             android:paddingBottom="@dimen/_50sdp"
-            android:clipToPadding="false"/>
+            android:translationZ="-10dp" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
-    <ImageView
-        android:id="@+id/filterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_14sdp"
-        android:src="@drawable/ns_filter"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainCustomToolbar" />
-
-    <TextView
-        android:id="@+id/textView"
-        style="@style/MinorColorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/filters"
-        app:layout_constraintBottom_toBottomOf="@+id/filterButton"
-        app:layout_constraintStart_toEndOf="@+id/filterButton"
-        app:layout_constraintTop_toTopOf="@+id/filterButton" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSquareStyle"
-        style="@style/fab_square_unfocused"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_8sdp"
-        android:adjustViewBounds="false"
-        android:clickable="true"
-        android:contextClickable="false"
-        android:cropToPadding="false"
-        android:src="@drawable/ns_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/fabColumnStyle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fabColumnStyle" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabColumnStyle"
-        style="@style/fab_square_focused"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@drawable/ns_rows"
-        app:layout_constraintBottom_toBottomOf="@+id/filterButton"
-        app:layout_constraintEnd_toStartOf="@+id/fabSquareStyle"
-        app:layout_constraintTop_toTopOf="@+id/filterButton" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_2sdp"
-        android:layout_marginTop="@dimen/_60sdp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="@+id/fabSquareStyle"
-        app:layout_constraintStart_toStartOf="@+id/filterButton"
-        app:layout_constraintTop_toBottomOf="@+id/mainCustomToolbar" />
 
     <com.flexeiprata.androidmytaskapplication.ui.base.CartButtonView
         android:id="@+id/cartButton"
@@ -97,16 +161,14 @@
         android:layout_marginBottom="@dimen/_30sdp"
         android:fontFamily="@font/open_sans_bold_light"
         android:text="@string/my_cart"
-        app:shapeAppearanceOverlay="@style/fab_semi_square"
         android:textSize="@dimen/_10ssp"
         app:backgroundTint="@color/purple"
-        app:layout_constraintBottom_toBottomOf="@+id/mainRV"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:leftIcon="@drawable/ns_cart_empty"
-        app:mainText="@string/my_cart" />
-
-
+        app:mainText="@string/my_cart"
+        app:shapeAppearanceOverlay="@style/fab_semi_square" />
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"

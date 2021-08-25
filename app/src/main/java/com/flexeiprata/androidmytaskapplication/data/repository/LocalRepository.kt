@@ -7,7 +7,6 @@ import javax.inject.Inject
 class LocalRepository @Inject constructor(private val dao: LocalDao) {
     fun getAllFav() = dao.getAllFav()
     suspend fun insertFav(product: Product) {
-        product.logicCategory = 0
         dao.insertFavorite(product)
     }
 
@@ -17,5 +16,5 @@ class LocalRepository @Inject constructor(private val dao: LocalDao) {
 
     fun getFavByID(id: Int) = dao.getFavByID(id)
 
-    suspend fun actualizePrice(newPrice: Int, id: Int) = dao.actualizePrice(newPrice, id)
+    suspend fun actualize(product: Product) = dao.actualize(product.name, product.price, product.colour, product.size, product.category.icon, product.id)
 }
