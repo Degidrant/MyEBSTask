@@ -104,11 +104,13 @@ class DescFragment : Fragment() {
         )
     }
 
+    // TODO: Here should come a list of rows to be displayed
     private fun updateUI(product: Product) {
         binding.apply {
             this@DescFragment.product = product
             recyclerUIDesc.apply {
                 layoutManager = LinearLayoutManager(requireContext())
+                // TODO: move adapter as global variable
                 adapter = DescUIRecyclerAdapter(product, this@DescFragment)
                 addItemDecoration(
                     DividerItemDecoration(

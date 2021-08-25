@@ -13,6 +13,9 @@ import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBody2Bin
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBodyBinding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
 
+// TODO: Remake Adapter to receive a List of rows to be displayed.
+//  For Example: RowHeader, RowMainInfo, RowDescription
+//  Also, implement DiffUtil for this page. To make it easier, you can use ListAdapter instead of RecyclerView.Adapter
 class DescUIRecyclerAdapter(
     private val product: Product,
     private val controller: Fragment
@@ -26,6 +29,13 @@ class DescUIRecyclerAdapter(
 
         const val SIZE = 3
     }
+
+    // TODO: Now you need to check like this:
+    //  when(row[position]){
+    //      is RowHeader -> HEADER
+    //      is RowMainInfo -> BODY_MAIN
+    //  }
+
 
     override fun getItemViewType(position: Int): Int {
         return (position + 1)
@@ -67,6 +77,8 @@ class DescUIRecyclerAdapter(
 
     inner class HeaderDescViewHolder(private val view: DescFragmentHeaderBinding) :
         BasicViewBindingViewHolder(view.root) {
+
+        // TODO: Here item will be RowHeader
         override fun <T> bind(item: T) {
             if (item is Product) {
                 Glide.with(view.mainPhotoImage.context)
@@ -79,6 +91,7 @@ class DescUIRecyclerAdapter(
 
     inner class MainBodyDescViewHolder(private val view: DescFragmentBodyBinding) :
         BasicViewBindingViewHolder(view.root) {
+        // TODO: Here item will be RowMainInfo
         override fun <T> bind(item: T) {
             if (item is Product) {
                 view.apply {
@@ -94,6 +107,7 @@ class DescUIRecyclerAdapter(
 
     inner class SecondBodyDescViewHolder(private val view: DescFragmentBody2Binding) :
         BasicViewBindingViewHolder(view.root) {
+        // TODO: Here item will be RowDescription
         override fun <T> bind(item: T) {
             if (item is Product) {
                 view.apply {
