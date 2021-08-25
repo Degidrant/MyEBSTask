@@ -27,12 +27,15 @@ data class Product(
     }
 }
 
+// TODO: Better to make in another file
 @Entity(tableName = "products_in_cart")
 data class ProductInCart(
     @Embedded val product: Product,
     @PrimaryKey(autoGenerate = true) val cartID: Int
 )
 
+
+// TODO: Better to make in another file. It a UI model, so better to keep file to UI related staff
 data class ProductUIModel(val product: Product, var isFav: Boolean) : Item {
     override fun isItemTheSame(other: Item): Boolean {
         return if (other is ProductUIModel) {

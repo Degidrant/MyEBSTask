@@ -8,6 +8,7 @@ import javax.inject.Inject
 class CartRepository @Inject constructor(private val dao: CartDao) {
     fun getCart() = dao.getCart()
     suspend fun clearCart() = dao.clearCart()
+
     suspend fun addToCart(product: Product) {
         dao.addToCart(ProductInCart(product, 0))
     }

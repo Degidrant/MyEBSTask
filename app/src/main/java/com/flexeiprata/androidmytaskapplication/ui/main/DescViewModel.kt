@@ -19,6 +19,7 @@ class DescViewModel @Inject constructor(
     private val localRepository: LocalRepository,
     private val cartRepository: CartRepository
 ) : ViewModel() {
+    // TODO: Don't send product directly to UI. Create rows to be displayed in ViewModel and send them to UI.
     fun getProductsById(id: Int) = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))
         try {

@@ -27,7 +27,6 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun listData(text: String, listFav: List<Product>) = Pager(PagingConfig(PAGE_SIZE)) {
-
         MainDataSource(repository, text)
     }
         .flow.cachedIn(viewModelScope).map { pagingData ->

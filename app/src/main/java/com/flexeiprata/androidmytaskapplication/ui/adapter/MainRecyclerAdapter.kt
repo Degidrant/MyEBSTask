@@ -23,7 +23,10 @@ import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterGridBindi
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 
+// TODO: I think will be better to rename this. For example: ProductsAdapter
 class MainRecyclerAdapter(
+    // TODO: Bad - Strong reference to Fragment. You have already an interface, so use it so we can have a weak reference 
+    //  more about interfaces : https://www.programiz.com/kotlin-programming/interfaces
     val parentFragment: Fragment,
     private val spanCountChecker: (Unit) -> Int // Prosto po prikolu, chtob posmotreti kak rabotaiet
 ) : PagingDataAdapter<ProductUIModel, MainRecyclerAdapter.ViewBindingViewHolder>(MainDiffUtil) {
@@ -31,6 +34,8 @@ class MainRecyclerAdapter(
     private lateinit var context: Context
     private lateinit var parentInterface: FavoriteSwitch
 
+
+    // TODO: Better move on bottom of the class - it will not affect general view aspect 
     interface FavoriteSwitch {
         fun deleteFav(fav: Product)
         fun insertFav(fav: Product)
@@ -44,6 +49,9 @@ class MainRecyclerAdapter(
     ): ViewBindingViewHolder {
         context = parent.context
         parentInterface = parentFragment as FavoriteSwitch
+
+        // TODO: You can extract LayoutInflater in local variable to use for bose ViewHolders
+        //  try to use 'when' instead of 'if' 
         return if (viewType == 1) {
             val binding =
                 MainAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -130,7 +138,7 @@ class MainRecyclerAdapter(
         return spanCountChecker.invoke(Unit)
     }
 
-
+    // TODO: Better to move view holder in another file
     inner class InnerViewHolder(private val view: MainAdapterBinding) :
         ViewBindingViewHolder(view.root) {
         override fun bind(item: ProductUIModel) {
@@ -198,6 +206,7 @@ class MainRecyclerAdapter(
         }
 
         override fun updateButton(fav: Boolean) {
+            // TODO: Try to change image/colors using xml 'selector' 
             view.apply {
                 if (fav) {
                     fabFavorite.apply {
@@ -230,6 +239,7 @@ class MainRecyclerAdapter(
         }
     }
 
+    // TODO: Better to move viewholder to another file
     inner class InnerGridViewHolder(private val view: MainAdapterGridBinding) :
         ViewBindingViewHolder(view.root) {
         override fun bind(item: ProductUIModel) {
@@ -297,6 +307,7 @@ class MainRecyclerAdapter(
         }
 
         override fun updateButton(fav: Boolean) {
+            // TODO: Try to use xml 'selector' to change image/color 
             view.apply {
                 if (fav) {
                     fabFavorite.apply {
