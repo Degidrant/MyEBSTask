@@ -45,51 +45,26 @@ class DescFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.buttonAddToCard.setOnClickListener {
-            try {
-                viewModel.addToCart()
-                Toast.makeText(
-                    requireContext(),
-                    "Product has been successfully added to cart!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            catch (ex: UninitializedPropertyAccessException){
-                ex.printStackTrace()
-            }
-
+            viewModel.addToCart(requireContext())
         }
         binding.apply {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val checker = viewModel.getFavById(args.id).first() == null
-                val image =
-                    if (!checker) R.drawable.ns_favorite_full
-                    else R.drawable.ns_like
-                withContext(Dispatchers.Main){
-                    mainToolbar.setOptionImage(image)
-                }
-            }
 
             mainToolbar.setOptionOnClickListener {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        try {
-                            val checker = viewModel.getFavById(args.id).first() == null
-                            if (checker) {
-                                viewModel.insertFav()
-                                withContext(Dispatchers.Main) {
-                                    mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
-                                }
-                            } else {
-                                viewModel.deleteFav()
-                                withContext(Dispatchers.Main) {
-                                    mainToolbar.setOptionImage(R.drawable.ns_like)
-                                }
-                            }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val checker = viewModel.getFavById(args.id).first() == null
+                    if (checker) {
+                        viewModel.insertFav()
+                        withContext(Dispatchers.Main) {
+                            mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
                         }
-                        catch (ex: UninitializedPropertyAccessException){
-                            ex.printStackTrace()
+                    } else {
+                        viewModel.deleteFav()
+                        withContext(Dispatchers.Main) {
+                            mainToolbar.setOptionImage(R.drawable.ns_like)
                         }
                     }
                 }
+            }
             mainToolbar.setHomeOnClickListener {
                 findNavController().popBackStack()
             }
@@ -133,6 +108,15 @@ class DescFragment : Fragment() {
                         DividerItemDecoration.VERTICAL
                     )
                 )
+            }
+            lifecycleScope.launch(Dispatchers.IO) {
+                val checker = viewModel.getFavById(args.id).first() == null
+                val image =
+                    if (!checker) R.drawable.ns_favorite_full
+                    else R.drawable.ns_like
+                withContext(Dispatchers.Main) {
+                    mainToolbar.setOptionImage(image)
+                }
             }
         }
     }

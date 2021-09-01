@@ -1,6 +1,8 @@
 package com.flexeiprata.androidmytaskapplication.ui.main
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -33,7 +35,14 @@ class DescViewModel @Inject constructor(
             product = repository.getProductById(id)
             val listOfModels = mutableListOf<DescUIModel>()
             listOfModels.add(RowHeaderUI("Header", product.category.icon))
-            listOfModels.add(RowMainUI("Main", product.name, String.format("%1s\n%2s", product.size, product.colour), product.price))
+            listOfModels.add(
+                RowMainUI(
+                    "Main",
+                    product.name,
+                    String.format("%1s\n%2s", product.size, product.colour),
+                    product.price
+                )
+            )
             listOfModels.add(RowDescUI("Desc", product.details))
             emit(Resource.success(listOfModels))
         } catch (ex: Exception) {
@@ -45,15 +54,33 @@ class DescViewModel @Inject constructor(
     fun getFavById(id: Int) = localRepository.getFavByID(id)
 
     fun insertFav() = viewModelScope.launch {
-        localRepository.insertFav(product)
+        try {
+            localRepository.insertFav(product)
+        } catch (ex: Exception){
+            ex.printStackTrace()
+        }
+
     }
 
     fun deleteFav() = viewModelScope.launch {
-        localRepository.deleteFav(product)
+        try {
+            localRepository.deleteFav(product)
+        } catch (ex: Exception){
+            ex.printStackTrace()
+        }
     }
 
-    fun addToCart() = viewModelScope.launch {
-        cartRepository.addToCart(product)
+    fun addToCart(toastContext: Context) = viewModelScope.launch {
+        try {
+            cartRepository.addToCart(product)
+            Toast.makeText(
+                toastContext,
+                "Product has been successfully added to cart!",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
     }
 
 }

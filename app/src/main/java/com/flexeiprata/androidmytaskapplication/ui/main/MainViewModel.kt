@@ -46,9 +46,6 @@ class MainViewModel @Inject constructor(
         localRepository.deleteFav(fav)
     }
 
-    fun getFavById(id: Int) = localRepository.getFavByID(id)
-
-
     fun getCart() = cartRepository.getCart().asLiveData()
 
     fun clearCart() = viewModelScope.launch {

@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
-import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
+import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -204,15 +204,18 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
         }
         adapter.addLoadStateListener {
-            /*binding.progressBar.visibility =
-                if (it.refresh == LoadState.Loading) {
-                    isLoading = true
-                    View.VISIBLE
-                } else {
-                    isLoading = false
-                    if (binding.searchBar.text.toString().isNotEmpty()) binding.mainRV.layoutManager?.scrollToPosition(0)
-                    View.INVISIBLE
-                }*/
+            try {
+                binding.progressBar.visibility =
+                    if (it.refresh == LoadState.Loading) {
+                        View.VISIBLE
+                    } else {
+                        if (binding.searchBar.text.toString().isNotEmpty()) binding.mainRV.layoutManager?.scrollToPosition(0)
+                        View.INVISIBLE
+                    }
+            } catch (ex: Exception){
+                ex.printStackTrace()
+            }
+
             isLoading = it.refresh == LoadState.Loading
         }
     }
