@@ -1,99 +1,78 @@
 package com.flexeiprata.androidmytaskapplication.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBody2Binding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBodyBinding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
+import com.flexeiprata.androidmytaskapplication.ui.models.DescUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.RowDescUI
+import com.flexeiprata.androidmytaskapplication.ui.models.RowHeaderUI
+import com.flexeiprata.androidmytaskapplication.ui.models.RowMainUI
 
-// TODO: Remake Adapter to receive a List of rows to be displayed.
-//  For Example: RowHeader, RowMainInfo, RowDescription
-//  Also, implement DiffUtil for this page. To make it easier, you can use ListAdapter instead of RecyclerView.Adapter
+//  TODO: Also, implement DiffUtil for this page. To make it easier, you can use ListAdapter instead of RecyclerView.Adapter
 class DescUIRecyclerAdapter(
-    private val product: Product,
-    private val controller: Fragment
+    private val listOfModels: MutableList<DescUIModel>
 ) :
     RecyclerView.Adapter<BasicViewBindingViewHolder>() {
 
     companion object {
-        const val HEADER = 1
-        const val BODY_MAIN = 2
-        const val BODY_DESC = 3
-
-        const val SIZE = 3
+        const val HEADER = 0
+        const val BODY_MAIN = 1
+        const val BODY_DESC = 2
     }
 
-    // TODO: Now you need to check like this:
-    //  when(row[position]){
-    //      is RowHeader -> HEADER
-    //      is RowMainInfo -> BODY_MAIN
-    //  }
-
-
     override fun getItemViewType(position: Int): Int {
-        return (position + 1)
+        return when(listOfModels[position]) {
+            is RowHeaderUI -> HEADER
+            is RowMainUI -> BODY_MAIN
+            is RowDescUI -> BODY_DESC
+            else -> throw Exception("Invalid viewHolder exception")
+        }
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BasicViewBindingViewHolder {
-        val binding: ViewBinding
-        val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            HEADER -> {
-                binding = DescFragmentHeaderBinding.inflate(inflater, parent, false)
-                HeaderDescViewHolder(binding)
+            val inflater = LayoutInflater.from(parent.context)
+            return when (viewType){
+                HEADER -> HeaderViewHolder(DescFragmentHeaderBinding.inflate(inflater, parent, false))
+                BODY_MAIN -> MainContentViewHolder(DescFragmentBodyBinding.inflate(inflater, parent, false))
+                BODY_DESC -> DescriptionViewHolder(DescFragmentBody2Binding.inflate(inflater, parent, false))
+                else -> throw Exception("onCreateViewHolder inflate exception")
             }
-            BODY_MAIN -> {
-                binding = DescFragmentBodyBinding.inflate(inflater, parent, false)
-                MainBodyDescViewHolder(binding)
-            }
-            BODY_DESC -> {
-                binding = DescFragmentBody2Binding.inflate(inflater, parent, false)
-                SecondBodyDescViewHolder(binding)
-            }
-            else -> throw IllegalStateException("Invalid structure parameter")
         }
-    }
+
 
     override fun onBindViewHolder(holder: BasicViewBindingViewHolder, position: Int) {
-        holder.bind(product)
+        holder.bind(listOfModels[position])
     }
 
-    override fun getItemCount(): Int = SIZE
+    override fun getItemCount(): Int = listOfModels.size
 
-
-
-    inner class HeaderDescViewHolder(private val view: DescFragmentHeaderBinding) :
+    inner class HeaderViewHolder(private val view: DescFragmentHeaderBinding) :
         BasicViewBindingViewHolder(view.root) {
-
-        // TODO: Here item will be RowHeader
         override fun <T> bind(item: T) {
-            if (item is Product) {
+            if (item is RowHeaderUI) {
                 Glide.with(view.mainPhotoImage.context)
-                    .load(product.category.icon)
+                    .load(item.image)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .into(view.mainPhotoImage)
             }
         }
     }
 
-    inner class MainBodyDescViewHolder(private val view: DescFragmentBodyBinding) :
+    inner class MainContentViewHolder(private val view: DescFragmentBodyBinding) :
         BasicViewBindingViewHolder(view.root) {
-        // TODO: Here item will be RowMainInfo
         override fun <T> bind(item: T) {
-            if (item is Product) {
+            if (item is RowMainUI) {
                 view.apply {
                     textViewName.text = item.name
-                    textViewDesc.text = String.format("%1s\n%2s", item.size, item.colour)
+                    textViewDesc.text = item.shortDesc
                     val priceText = String.format("$${item.price}.-")
                     textViewPrice.text = priceText
                     textViewPriceSmall.text = priceText
@@ -102,13 +81,12 @@ class DescUIRecyclerAdapter(
         }
     }
 
-    inner class SecondBodyDescViewHolder(private val view: DescFragmentBody2Binding) :
+    inner class DescriptionViewHolder(private val view: DescFragmentBody2Binding) :
         BasicViewBindingViewHolder(view.root) {
-        // TODO: Here item will be RowDescription
         override fun <T> bind(item: T) {
-            if (item is Product) {
+            if (item is RowDescUI) {
                 view.apply {
-                    textViewFullDesc.text = item.details
+                    textViewFullDesc.text = item.desc
                 }
             }
         }

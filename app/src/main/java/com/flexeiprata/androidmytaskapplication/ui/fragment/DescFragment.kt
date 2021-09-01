@@ -13,8 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
+import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
+import com.flexeiprata.androidmytaskapplication.ui.adapter.BasicViewBindingViewHolder
 import com.flexeiprata.androidmytaskapplication.ui.adapter.DescUIRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
+import com.flexeiprata.androidmytaskapplication.ui.models.DescUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.RowDescUI
+import com.flexeiprata.androidmytaskapplication.ui.models.RowHeaderUI
+import com.flexeiprata.androidmytaskapplication.ui.models.RowMainUI
 import com.flexeiprata.androidmytaskapplication.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +38,7 @@ class DescFragment : Fragment() {
     private val args: DescFragmentArgs by navArgs()
 
     private lateinit var product: Product
+    private lateinit var globalAdapter: DescUIRecyclerAdapter
 
 
     override fun onCreateView(
@@ -110,8 +117,11 @@ class DescFragment : Fragment() {
             this@DescFragment.product = product
             recyclerUIDesc.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                // TODO: move adapter as global variable
-                adapter = DescUIRecyclerAdapter(product, this@DescFragment)
+                val listOfModels = mutableListOf<DescUIModel>()
+                listOfModels.add(RowHeaderUI(product.category.icon))
+                listOfModels.add(RowMainUI(product.name, String.format("%1s\n%2s", product.size, product.colour), product.price))
+                listOfModels.add(RowDescUI(product.details))
+                adapter = DescUIRecyclerAdapter(listOfModels)
                 addItemDecoration(
                     DividerItemDecoration(
                         requireContext(),
