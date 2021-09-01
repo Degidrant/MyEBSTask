@@ -60,7 +60,7 @@ class ProductsAdapter(
         if (!payloads.isNullOrEmpty()) {
             payloads.forEach { payloadList ->
                 if (payloadList is List<*>) {
-                    (payloadList as List<Payloadable>).forEach { payload ->
+                    payloadList.forEach { payload ->
                         Log.d(LOG_DEBUG, "Here is a payload")
                         when (payload) {
                             is ProductPayloads.PriceChanged -> holder.updatePrice(payload.price)

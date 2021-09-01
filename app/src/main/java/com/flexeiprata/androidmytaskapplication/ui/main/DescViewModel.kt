@@ -26,7 +26,6 @@ class DescViewModel @Inject constructor(
 ) : ViewModel() {
     private lateinit var product: Product
 
-    // TODO: Don't send product directly to UI. Create rows to be displayed in ViewModel and send them to UI.
     fun getProductsById(id: Int) = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))
         try {

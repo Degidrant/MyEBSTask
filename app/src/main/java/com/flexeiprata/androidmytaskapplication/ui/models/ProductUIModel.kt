@@ -20,7 +20,7 @@ data class ProductUIModel(val product: Product, var isFav: Boolean) : Item {
                     product.colour == other.product.colour &&
                     product.size == other.product.size &&
                     product.category.icon == other.product.category.icon &&
-                    isFav == isFav
+                    isFav == other.isFav
         else false
     }
 
