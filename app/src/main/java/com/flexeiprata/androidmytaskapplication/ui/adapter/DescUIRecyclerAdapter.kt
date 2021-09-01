@@ -20,7 +20,7 @@ class DescUIRecyclerAdapter(
     private val product: Product,
     private val controller: Fragment
 ) :
-    RecyclerView.Adapter<DescUIRecyclerAdapter.BasicViewBindingViewHolder>() {
+    RecyclerView.Adapter<BasicViewBindingViewHolder>() {
 
     companion object {
         const val HEADER = 1
@@ -70,10 +70,7 @@ class DescUIRecyclerAdapter(
 
     override fun getItemCount(): Int = SIZE
 
-    abstract class BasicViewBindingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        open fun <T> bind(item: T) {}
-        open fun bind() {}
-    }
+
 
     inner class HeaderDescViewHolder(private val view: DescFragmentHeaderBinding) :
         BasicViewBindingViewHolder(view.root) {

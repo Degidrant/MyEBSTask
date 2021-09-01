@@ -6,9 +6,9 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flexeiprata.androidmytaskapplication.R
-import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
 
 class RowsProductsViewHolder(
     private val view: MainAdapterBinding,
@@ -80,25 +80,17 @@ class RowsProductsViewHolder(
     }
 
     override fun updateButton(fav: Boolean) {
-        // TODO: Try to change image/colors using xml 'selector'
+        // FABs background color cannot be accessed together with image drawable
         view.apply {
             if (fav) {
                 fabFavorite.apply {
-                    setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.fab_states_favorite
-                        )
-                    )
+                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ns_favorite_full))
+                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.warm_yellow))
                 }
             } else {
                 fabFavorite.apply {
-                    setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.fab_state_non_favorite
-                        )
-                    )
+                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ns_like))
+                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
                 }
             }
         }

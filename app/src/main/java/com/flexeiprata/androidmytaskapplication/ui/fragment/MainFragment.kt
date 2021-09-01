@@ -34,7 +34,7 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
 
     private val viewModel: MainViewModel by viewModels()
     private var adapter: ProductsAdapter =
-        ProductsAdapter(this) { magicLinearManager.spanCount }
+        ProductsAdapter(this)
 
     private lateinit var magicLinearManager: GridLayoutManager
     private var favList = listOf<Product>()
@@ -249,4 +249,7 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             }
         }
     }
+
+    override fun getSpanCount() = magicLinearManager.spanCount
+
 }

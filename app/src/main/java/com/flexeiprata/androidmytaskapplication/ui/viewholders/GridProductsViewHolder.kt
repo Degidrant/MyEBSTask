@@ -77,33 +77,17 @@ class GridProductsViewHolder(private val view: MainAdapterGridBinding, private v
     }
 
     override fun updateButton(fav: Boolean) {
-        // TODO: Try to use xml 'selector' to change image/color
+        // FABs background color cannot be accessed together with image drawable
         view.apply {
             if (fav) {
                 fabFavorite.apply {
-                    setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.ns_favorite_full
-                        )
-                    )
-                    imageTintList =
-                        ColorStateList.valueOf(context.getColor(R.color.funny_orange))
-                    backgroundTintList =
-                        ColorStateList.valueOf(context.getColor(R.color.warm_yellow))
+                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ns_favorite_full))
+                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.warm_yellow))
                 }
             } else {
                 fabFavorite.apply {
-                    setImageDrawable(
-                        ContextCompat.getDrawable(
-                            context,
-                            R.drawable.ns_like
-                        )
-                    )
-                    imageTintList =
-                        ColorStateList.valueOf(context.getColor(R.color.funny_orange))
-                    backgroundTintList =
-                        ColorStateList.valueOf(context.getColor(R.color.white))
+                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ns_like))
+                    backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
                 }
             }
         }

@@ -1,20 +1,11 @@
 package com.flexeiprata.androidmytaskapplication.ui.adapter
 
-import android.content.Context
-import android.content.res.ColorStateList
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.models.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
@@ -26,39 +17,32 @@ import com.flexeiprata.androidmytaskapplication.ui.viewholders.RowsProductsViewH
 import com.flexeiprata.androidmytaskapplication.ui.viewholders.ViewBindingProductsViewHolder
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 
-//  TODO: more about interfaces : https://www.programiz.com/kotlin-programming/interfaces
-
-// TODO: I think will be better to rename this. For example: ProductsAdapter
 class ProductsAdapter(
-    fragment: Fragment,
-    private val spanCountChecker: (Unit) -> Int // Prosto po prikolu, chtob posmotreti kak rabotaiet
+    fragment: Fragment
 ) : PagingDataAdapter<ProductUIModel, ViewBindingProductsViewHolder>(MainDiffUtil) {
 
-    //private lateinit var context: Context
-    private var parentInterface: FavoriteSwitch
+    private val parentInterface: FavoriteSwitch
 
     init {
         parentInterface = fragment as FavoriteSwitch
     }
 
-    // TODO: Better move on bottom of the class - it will not affect general view aspect
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ViewBindingProductsViewHolder {
-        //context = parent.context
         val inflater = LayoutInflater.from(parent.context)
-        // TODO: You can extract LayoutInflater in local variable to use for bose ViewHolders
-        //  try to use 'when' instead of 'if' 
-        return if (viewType == 1) {
-            val binding =
-                MainAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            RowsProductsViewHolder(binding, parentInterface)
-        } else {
-            val binding =
-                MainAdapterGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            GridProductsViewHolder(binding, parentInterface)
+        return when (viewType){
+            1 -> {
+                val binding =
+                    MainAdapterBinding.inflate(inflater, parent, false)
+                RowsProductsViewHolder(binding, parentInterface)
+            }
+            else -> {
+                val binding =
+                    MainAdapterGridBinding.inflate(inflater, parent, false)
+                GridProductsViewHolder(binding, parentInterface)
+            }
         }
     }
 
@@ -124,7 +108,7 @@ class ProductsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return spanCountChecker.invoke(Unit)
+        return parentInterface.getSpanCount()
     }
 
     interface FavoriteSwitch {
@@ -132,6 +116,7 @@ class ProductsAdapter(
         fun insertFav(fav: Product)
         fun addToCart(product: Product)
         fun navigateToNext(id: Int)
+        fun getSpanCount() : Int
     }
 
 }

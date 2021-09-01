@@ -29,7 +29,7 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     private val binding get() = _binding!!
 
     private val viewModel: FavViewModel by viewModels()
-    private var adapter: ProductsAdapter = ProductsAdapter(this) { 1 }
+    private var adapter: ProductsAdapter = ProductsAdapter(this)
     private var mainList = listOf<Product>()
     private var isRefresh = false
     private lateinit var refresher: SwipeRefreshLayout.OnRefreshListener
@@ -148,4 +148,5 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         }
     }
 
+    override fun getSpanCount() = 1
 }
