@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 import com.google.gson.annotations.SerializedName
 
 @Entity
@@ -25,51 +24,4 @@ data class Product(
         else
             super.equals(other)
     }
-}
-
-// TODO: Better to make in another file
-@Entity(tableName = "products_in_cart")
-data class ProductInCart(
-    @Embedded val product: Product,
-    @PrimaryKey(autoGenerate = true) val cartID: Int
-)
-
-
-// TODO: Better to make in another file. It a UI model, so better to keep file to UI related staff
-data class ProductUIModel(val product: Product, var isFav: Boolean) : Item {
-    override fun isItemTheSame(other: Item): Boolean {
-        return if (other is ProductUIModel) {
-            product.id == other.product.id
-        } else
-            false
-    }
-
-    override fun isContentTheSame(other: Item): Boolean {
-        return if (other is ProductUIModel)
-            product.price == other.product.price &&
-                    product.name == other.product.name &&
-                    product.colour == other.product.colour &&
-                    product.size == other.product.size &&
-                    product.category.icon == other.product.category.icon &&
-                    isFav == isFav
-        else false
-    }
-
-    override fun payloads(other: Item): List<Payloadable> {
-        val payloads = mutableListOf<Payloadable>()
-        if (other is ProductUIModel) {
-            if (product.price != other.product.price)
-                payloads.add(ProductPayloads.PriceChanged(other.product.price))
-            if (product.name != other.product.name)
-                payloads.add(ProductPayloads.NameChanged(other.product.name))
-            if (product.category.icon != other.product.category.icon)
-                payloads.add(ProductPayloads.PicChanged(other.product.category.icon))
-            if (product.size != other.product.size || product.colour != other.product.colour)
-                payloads.add(ProductPayloads.DescChanged(other.product.colour, other.product.size))
-            if (isFav != other.isFav)
-                payloads.add(ProductPayloads.FavChanged(other.isFav))
-        }
-        return payloads
-    }
-
 }

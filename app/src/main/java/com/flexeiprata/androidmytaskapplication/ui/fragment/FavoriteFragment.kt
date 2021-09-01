@@ -13,23 +13,23 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.flexeiprata.androidmytaskapplication.data.models.Product
-import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
-import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
+import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.FavViewModel
+import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
-class FavoriteFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
+class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
 
     private var _binding: FavFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: FavViewModel by viewModels()
-    private var adapter: MainRecyclerAdapter = MainRecyclerAdapter(this) { 1 }
+    private var adapter: ProductsAdapter = ProductsAdapter(this) { 1 }
     private var mainList = listOf<Product>()
     private var isRefresh = false
     private lateinit var refresher: SwipeRefreshLayout.OnRefreshListener

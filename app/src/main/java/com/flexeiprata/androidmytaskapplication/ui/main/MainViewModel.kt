@@ -1,21 +1,21 @@
 package com.flexeiprata.androidmytaskapplication.ui.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.flexeiprata.androidmytaskapplication.data.models.Product
-import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.data.pagination.MainDataSource
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
+import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.utils.PAGE_SIZE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

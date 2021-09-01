@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/fabFavorite"
-        app:layout_constraintEnd_toEndOf="@+id/textViewDesc"
-        app:layout_constraintTop_toTopOf="@+id/fabFavorite"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
         app:srcCompat="@drawable/ns_cart_empty" />
 
     <TextView
@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
         app:layout_constraintEnd_toEndOf="@+id/textViewPrice"
-        app:layout_constraintHorizontal_bias="0.553"
         app:layout_constraintStart_toStartOf="@+id/textViewPrice"
         app:layout_constraintTop_toBottomOf="@+id/textViewPrice"
         tools:text="$0000" />
@@ -70,7 +69,7 @@
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_100sdp"
         android:layout_marginStart="@dimen/_26sdp"
-        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:adjustViewBounds="true"
         android:cropToPadding="true"
         android:scaleType="fitCenter"
@@ -82,15 +81,13 @@
         style="@style/fab_orange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_19sdp"
-        android:layout_marginBottom="@dimen/_19sdp"
         android:adjustViewBounds="false"
         android:clickable="true"
         android:cropToPadding="false"
         app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textViewDesc"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPrice"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
         app:srcCompat="@drawable/ns_like"
         app:useCompatPadding="false" />
 </androidx.constraintlayout.widget.ConstraintLayout>

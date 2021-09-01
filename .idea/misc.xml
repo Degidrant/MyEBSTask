@@ -6,6 +6,9 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.38385416666666666" />
         <entry key="app/src/main/res/drawable/circle.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/color_roud.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/fab_state_non_favorite.xml" value="0.325" />
+        <entry key="app/src/main/res/drawable/fab_states.xml" value="0.325" />
+        <entry key="app/src/main/res/drawable/fab_states_favorite.xml" value="0.325" />
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ic_favorite.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ic_favorite_white.xml" value="0.371875" />

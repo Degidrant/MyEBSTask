@@ -28,8 +28,8 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                android:fitsSystemWindows="true">
+                android:fitsSystemWindows="true"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -44,7 +44,7 @@
                     android:background="@drawable/search_shape"
                     android:drawableStart="@drawable/ns_search"
                     android:fontFamily="@font/open_sans_bold_light"
-                    android:hint="Search"
+                    android:hint="@string/search"
                     android:includeFontPadding="false"
                     android:drawablePadding="@dimen/_9sdp"
                     android:inputType="textCapWords"

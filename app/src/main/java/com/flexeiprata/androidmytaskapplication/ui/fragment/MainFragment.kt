@@ -13,14 +13,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.models.ProductPayloads
-import com.flexeiprata.androidmytaskapplication.data.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
-import com.flexeiprata.androidmytaskapplication.ui.adapter.MainRecyclerAdapter
+import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
+import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -28,14 +27,14 @@ import kotlinx.coroutines.flow.*
 
 
 @AndroidEntryPoint
-class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
+class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
-    private var adapter: MainRecyclerAdapter =
-        MainRecyclerAdapter(this) { magicLinearManager.spanCount }
+    private var adapter: ProductsAdapter =
+        ProductsAdapter(this) { magicLinearManager.spanCount }
 
     private lateinit var magicLinearManager: GridLayoutManager
     private var favList = listOf<Product>()
@@ -74,6 +73,12 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             }
         }
         setupObserversUI()
+        binding.collapser.apply {
+            setExpanded(false)
+            setOnClickListener {
+                binding.mainRV.smoothScrollToPosition(0)
+            }
+        }
     }
 
     override fun onStart() {
@@ -87,6 +92,7 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
             }
         }
     }
+
 
     private fun switchLayoutManager(isLinear: Boolean) {
         binding.apply {
@@ -206,7 +212,7 @@ class MainFragment : Fragment(), MainRecyclerAdapter.FavoriteSwitch {
                 if (it.refresh == LoadState.Loading) {
                     View.VISIBLE
                 } else {
-                    magicLinearManager.scrollToPositionWithOffset(0, 0)
+                    if (binding.searchBar.text.toString().isNotEmpty()) binding.mainRV.layoutManager?.scrollToPosition(0)
                     View.INVISIBLE
                 }
         }
