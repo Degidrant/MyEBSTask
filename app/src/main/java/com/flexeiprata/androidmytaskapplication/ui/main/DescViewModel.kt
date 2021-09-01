@@ -1,5 +1,6 @@
 package com.flexeiprata.androidmytaskapplication.ui.main
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,10 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
+import com.flexeiprata.androidmytaskapplication.ui.models.DescUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.RowDescUI
+import com.flexeiprata.androidmytaskapplication.ui.models.RowHeaderUI
+import com.flexeiprata.androidmytaskapplication.ui.models.RowMainUI
 import com.flexeiprata.androidmytaskapplication.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +24,18 @@ class DescViewModel @Inject constructor(
     private val localRepository: LocalRepository,
     private val cartRepository: CartRepository
 ) : ViewModel() {
+    private lateinit var product: Product
+
     // TODO: Don't send product directly to UI. Create rows to be displayed in ViewModel and send them to UI.
     fun getProductsById(id: Int) = liveData(Dispatchers.IO) {
         emit(Resource.loading(null))
         try {
-            emit(Resource.success(repository.getProductById(id)))
+            product = repository.getProductById(id)
+            val listOfModels = mutableListOf<DescUIModel>()
+            listOfModels.add(RowHeaderUI("Header", product.category.icon))
+            listOfModels.add(RowMainUI("Main", product.name, String.format("%1s\n%2s", product.size, product.colour), product.price))
+            listOfModels.add(RowDescUI("Desc", product.details))
+            emit(Resource.success(listOfModels))
         } catch (ex: Exception) {
             emit(Resource.error(null, "Error. Exception: ${ex.message}"))
         }
@@ -31,15 +43,15 @@ class DescViewModel @Inject constructor(
 
     fun getFavById(id: Int) = localRepository.getFavByID(id)
 
-    fun insertFav(fav: Product) = viewModelScope.launch {
-        localRepository.insertFav(fav)
+    fun insertFav() = viewModelScope.launch {
+        localRepository.insertFav(product)
     }
 
-    fun deleteFav(fav: Product) = viewModelScope.launch {
-        localRepository.deleteFav(fav)
+    fun deleteFav() = viewModelScope.launch {
+        localRepository.deleteFav(product)
     }
 
-    fun addToCart(product: Product) = viewModelScope.launch {
+    fun addToCart() = viewModelScope.launch {
         cartRepository.addToCart(product)
     }
 

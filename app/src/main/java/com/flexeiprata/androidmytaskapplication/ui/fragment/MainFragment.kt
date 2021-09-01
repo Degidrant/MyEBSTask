@@ -2,7 +2,6 @@ package com.flexeiprata.androidmytaskapplication.ui.fragment
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
@@ -20,7 +19,6 @@ import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
 import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -33,8 +31,8 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
-    private var adapter: ProductsAdapter =
-        ProductsAdapter(this)
+    private var adapter: ProductsAdapter = ProductsAdapter(this)
+    private var isLoading = true
 
     private lateinit var magicLinearManager: GridLayoutManager
     private var favList = listOf<Product>()
@@ -138,7 +136,6 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         init = lifecycleScope.launchWhenCreated {
             viewModel.getAllFav().collect {
                 favList = it
-                Log.d(LOG_DEBUG, "collectedFavs")
                 init.cancel()
             }
         }
@@ -146,7 +143,6 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             init.join()
             viewModel.listData("", favList).collect {
                 adapter.submitData(it)
-                Log.d(LOG_DEBUG, "dataSubmited")
             }
         }
     }
@@ -210,8 +206,10 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         adapter.addLoadStateListener {
             binding.progressBar.visibility =
                 if (it.refresh == LoadState.Loading) {
+                    isLoading = true
                     View.VISIBLE
                 } else {
+                    isLoading = false
                     if (binding.searchBar.text.toString().isNotEmpty()) binding.mainRV.layoutManager?.scrollToPosition(0)
                     View.INVISIBLE
                 }
@@ -240,6 +238,7 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         lifecycleScope.launch {
             val fav = viewModel.getFavById(id).first() != null
             withContext(Dispatchers.Main) {
+                if (!isLoading)
                 findNavController().navigate(
                     MainFragmentDirections.actionMainFragmentToDescFragment(
                         id,

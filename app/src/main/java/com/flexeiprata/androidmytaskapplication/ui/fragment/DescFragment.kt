@@ -1,7 +1,9 @@
 package com.flexeiprata.androidmytaskapplication.ui.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,16 +13,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
-import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
-import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
-import com.flexeiprata.androidmytaskapplication.ui.adapter.BasicViewBindingViewHolder
 import com.flexeiprata.androidmytaskapplication.ui.adapter.DescUIRecyclerAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
 import com.flexeiprata.androidmytaskapplication.ui.models.DescUIModel
-import com.flexeiprata.androidmytaskapplication.ui.models.RowDescUI
-import com.flexeiprata.androidmytaskapplication.ui.models.RowHeaderUI
-import com.flexeiprata.androidmytaskapplication.ui.models.RowMainUI
 import com.flexeiprata.androidmytaskapplication.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -37,10 +33,6 @@ class DescFragment : Fragment() {
     private val viewModel: DescViewModel by viewModels()
     private val args: DescFragmentArgs by navArgs()
 
-    private lateinit var product: Product
-    private lateinit var globalAdapter: DescUIRecyclerAdapter
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,12 +45,18 @@ class DescFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.buttonAddToCard.setOnClickListener {
-            viewModel.addToCart(product)
-            Toast.makeText(
-                requireContext(),
-                "${product.name} has been added to cart!",
-                Toast.LENGTH_SHORT
-            ).show()
+            try {
+                viewModel.addToCart()
+                Toast.makeText(
+                    requireContext(),
+                    "Product has been successfully added to cart!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            catch (ex: UninitializedPropertyAccessException){
+                ex.printStackTrace()
+            }
+
         }
         binding.apply {
             val image =
@@ -66,21 +64,27 @@ class DescFragment : Fragment() {
                 else R.drawable.ns_like
             mainToolbar.setOptionImage(image)
             mainToolbar.setOptionOnClickListener {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val checker = viewModel.getFavById(product.id).first() == null
-                    if (checker) {
-                        viewModel.insertFav(product)
-                        withContext(Dispatchers.Main) {
-                            mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
+
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            val checker = viewModel.getFavById(args.id).first() == null
+                            if (checker) {
+                                viewModel.insertFav()
+                                withContext(Dispatchers.Main) {
+                                    mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
+                                }
+                            } else {
+                                viewModel.deleteFav()
+                                withContext(Dispatchers.Main) {
+                                    mainToolbar.setOptionImage(R.drawable.ns_like)
+                                }
+                            }
                         }
-                    } else {
-                        viewModel.deleteFav(product)
-                        withContext(Dispatchers.Main) {
-                            mainToolbar.setOptionImage(R.drawable.ns_like)
+                        catch (ex: UninitializedPropertyAccessException){
+                            ex.printStackTrace()
                         }
                     }
                 }
-            }
             mainToolbar.setHomeOnClickListener {
                 findNavController().popBackStack()
             }
@@ -98,12 +102,14 @@ class DescFragment : Fragment() {
                             it.data?.let { productData ->
                                 updateUI(productData)
                             }
+                            binding.progressBarLoading.visibility = View.GONE
                         }
                         Status.ERROR -> {
                             Toast.makeText(requireContext(), "Loading Error", Toast.LENGTH_SHORT)
                                 .show()
                         }
                         Status.LOADING -> {
+                            binding.progressBarLoading.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -111,16 +117,10 @@ class DescFragment : Fragment() {
         )
     }
 
-    // TODO: Here should come a list of rows to be displayed
-    private fun updateUI(product: Product) {
+    private fun updateUI(listOfModels: MutableList<DescUIModel>) {
         binding.apply {
-            this@DescFragment.product = product
             recyclerUIDesc.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                val listOfModels = mutableListOf<DescUIModel>()
-                listOfModels.add(RowHeaderUI(product.category.icon))
-                listOfModels.add(RowMainUI(product.name, String.format("%1s\n%2s", product.size, product.colour), product.price))
-                listOfModels.add(RowDescUI(product.details))
                 adapter = DescUIRecyclerAdapter(listOfModels)
                 addItemDecoration(
                     DividerItemDecoration(

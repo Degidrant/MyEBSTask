@@ -1,4 +1,6 @@
 package com.flexeiprata.androidmytaskapplication.ui.models
 
-open class DescUIModel {
+abstract class DescUIModel(){
+    abstract fun id() : Any
+    abstract fun equality(other: DescUIModel) : Boolean
 }
