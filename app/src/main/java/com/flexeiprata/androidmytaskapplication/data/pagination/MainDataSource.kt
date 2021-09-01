@@ -20,7 +20,6 @@ class MainDataSource(private val repository: MainRepository, private val text: S
             responseData.addAll(data)
             val prevKey = if (currentLoadingPageKey == 1) null else currentLoadingPageKey - 1
             val nextKey = if (currentLoadingPageKey == pagesCount) null else currentLoadingPageKey + 1
-            Log.d(LOG_DEBUG, currentLoadingPageKey.toString() + "/" + response.body()?.total_pages.toString())
             return LoadResult.Page(
                 data = responseData,
                 prevKey = prevKey,

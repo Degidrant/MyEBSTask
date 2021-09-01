@@ -29,11 +29,9 @@ class MainContentViewHolder(private val view: DescFragmentBodyBinding) :
     DescAbstractVH(view.root) {
     override fun <T> bind(item: T) {
         if (item is RowMainUI) {
-            view.apply {
                 updateTitle(item.name)
                 updateDesc(item.shortDesc)
                 updatePrice(item.price)
-            }
         }
     }
 

@@ -59,12 +59,17 @@ class DescFragment : Fragment() {
 
         }
         binding.apply {
-            val image =
-                if (args.isFav) R.drawable.ns_favorite_full
-                else R.drawable.ns_like
-            mainToolbar.setOptionImage(image)
-            mainToolbar.setOptionOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val checker = viewModel.getFavById(args.id).first() == null
+                val image =
+                    if (!checker) R.drawable.ns_favorite_full
+                    else R.drawable.ns_like
+                withContext(Dispatchers.Main){
+                    mainToolbar.setOptionImage(image)
+                }
+            }
 
+            mainToolbar.setOptionOnClickListener {
                     lifecycleScope.launch(Dispatchers.IO) {
                         try {
                             val checker = viewModel.getFavById(args.id).first() == null

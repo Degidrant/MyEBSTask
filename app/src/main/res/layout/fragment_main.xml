@@ -169,14 +169,17 @@
         app:leftIcon="@drawable/ns_cart_empty"
         app:mainText="@string/my_cart"
         app:shapeAppearanceOverlay="@style/fab_semi_square" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_8sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/cartButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

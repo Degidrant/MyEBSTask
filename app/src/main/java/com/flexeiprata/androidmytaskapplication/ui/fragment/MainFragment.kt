@@ -204,7 +204,7 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
         }
         adapter.addLoadStateListener {
-            binding.progressBar.visibility =
+            /*binding.progressBar.visibility =
                 if (it.refresh == LoadState.Loading) {
                     isLoading = true
                     View.VISIBLE
@@ -212,7 +212,8 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                     isLoading = false
                     if (binding.searchBar.text.toString().isNotEmpty()) binding.mainRV.layoutManager?.scrollToPosition(0)
                     View.INVISIBLE
-                }
+                }*/
+            isLoading = it.refresh == LoadState.Loading
         }
     }
 
@@ -235,18 +236,12 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     }
 
     override fun navigateToNext(id: Int) {
-        lifecycleScope.launch {
-            val fav = viewModel.getFavById(id).first() != null
-            withContext(Dispatchers.Main) {
-                if (!isLoading)
-                findNavController().navigate(
-                    MainFragmentDirections.actionMainFragmentToDescFragment(
-                        id,
-                        fav
-                    )
+        if (!isLoading)
+            findNavController().navigate(
+                MainFragmentDirections.actionMainFragmentToDescFragment(
+                    id,
                 )
-            }
-        }
+            )
     }
 
     override fun getSpanCount() = magicLinearManager.spanCount

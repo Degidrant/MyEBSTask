@@ -1,5 +1,6 @@
 package com.flexeiprata.androidmytaskapplication.ui.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.DescUIModel
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowDescUI
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowHeaderUI
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowMainUI
+import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,7 @@ class DescViewModel @Inject constructor(
             emit(Resource.success(listOfModels))
         } catch (ex: Exception) {
             emit(Resource.error(null, "Error. Exception: ${ex.message}"))
+            Log.d(LOG_DEBUG, "Error. Exception: ${ex.message}")
         }
     }
 

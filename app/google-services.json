@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "490100751635",
+    "project_id": "testebs-e437d",
+    "storage_bucket": "testebs-e437d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490100751635:android:b340e87722f52c35266ee6",
+        "android_client_info": {
+          "package_name": "com.flexeiprata.androidmytaskapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "490100751635-hq1505bc38s4l3o0tffjqdn5j4ta8sih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.flexeiprata.androidmytaskapplication",
+            "certificate_hash": "17a0ba1f97d395dfe17fe36250c172cdc385a2bf"
+          }
+        },
+        {
+          "client_id": "490100751635-lf9etjcj9asp03ck5bocqemsemrrjaof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB76jlzitIwMbH7fBxwcZdHsckUvMNyq0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "490100751635-lf9etjcj9asp03ck5bocqemsemrrjaof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

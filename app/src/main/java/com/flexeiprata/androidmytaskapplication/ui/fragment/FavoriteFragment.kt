@@ -55,7 +55,7 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             viewModel.clearCart()
             Toast.makeText(requireContext(), "Test: Clear Cart", Toast.LENGTH_SHORT).show()
         }
-        refresher = SwipeRefreshLayout.OnRefreshListener{
+        refresher = SwipeRefreshLayout.OnRefreshListener {
             lifecycleScope.launch {
                 viewModel.actualizeData(mainList)
                 withContext(Dispatchers.Main) {
@@ -135,17 +135,11 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     }
 
     override fun navigateToNext(id: Int) {
-        lifecycleScope.launch {
-            val fav = viewModel.getFavById(id).first() != null
-            withContext(Dispatchers.Main) {
-                findNavController().navigate(
-                    FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
-                        id,
-                        fav
-                    )
-                )
-            }
-        }
+        findNavController().navigate(
+            FavoriteFragmentDirections.actionFavoriteFragmentToDescFragment(
+                id
+            )
+        )
     }
 
     override fun getSpanCount() = 1

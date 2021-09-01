@@ -9,4 +9,6 @@
     <string name="buy_now">Buy now</string>
     <string name="sort_by">SORT BY</string>
     <string name="search">Search</string>
+    <string name="default_notification_channel_id">Default Notifications</string>
+    <string name="message">Notification</string>
 </resources>

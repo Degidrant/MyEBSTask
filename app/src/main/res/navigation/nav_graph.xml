@@ -24,9 +24,6 @@
         <argument
             android:name="id"
             app:argType="integer" />
-        <argument
-            android:name="isFav"
-            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
