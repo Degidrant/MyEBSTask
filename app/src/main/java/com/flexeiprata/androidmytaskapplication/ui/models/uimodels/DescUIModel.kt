@@ -1,4 +1,4 @@
-package com.flexeiprata.androidmytaskapplication.ui.models
+package com.flexeiprata.androidmytaskapplication.ui.models.uimodels
 
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 

@@ -1,8 +1,8 @@
-package com.flexeiprata.androidmytaskapplication.ui.models
+package com.flexeiprata.androidmytaskapplication.ui.models.uimodels
 
 import com.flexeiprata.androidmytaskapplication.data.models.Item
 import com.flexeiprata.androidmytaskapplication.data.models.Product
-import com.flexeiprata.androidmytaskapplication.data.models.ProductPayloads
+import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 
 data class ProductUIModel(val product: Product, var isFav: Boolean) : Item {

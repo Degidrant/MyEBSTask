@@ -1,7 +1,7 @@
-package com.flexeiprata.androidmytaskapplication.ui.models
+package com.flexeiprata.androidmytaskapplication.ui.models.uimodels
 
-import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
+import com.flexeiprata.androidmytaskapplication.ui.models.payloads.DescUIPayloads
 
 data class RowHeaderUI(val tag : String, val image: String) : DescUIModel() {
     override fun id(): Any = tag

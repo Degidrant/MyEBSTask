@@ -1,16 +1,16 @@
-package com.flexeiprata.androidmytaskapplication.ui.adapter
+package com.flexeiprata.androidmytaskapplication.ui.viewholders
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBody2Binding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBodyBinding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
-import com.flexeiprata.androidmytaskapplication.ui.models.RowDescUI
-import com.flexeiprata.androidmytaskapplication.ui.models.RowHeaderUI
-import com.flexeiprata.androidmytaskapplication.ui.models.RowMainUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowDescUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowHeaderUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowMainUI
 
 class HeaderViewHolder(private val view: DescFragmentHeaderBinding) :
-    BasicViewBindingViewHolder(view.root) {
+    DescAbstractVH(view.root) {
     override fun <T> bind(item: T) {
         if (item is RowHeaderUI) {
             updateImage(item.image)
@@ -26,7 +26,7 @@ class HeaderViewHolder(private val view: DescFragmentHeaderBinding) :
 }
 
 class MainContentViewHolder(private val view: DescFragmentBodyBinding) :
-    BasicViewBindingViewHolder(view.root) {
+    DescAbstractVH(view.root) {
     override fun <T> bind(item: T) {
         if (item is RowMainUI) {
             view.apply {
@@ -59,7 +59,7 @@ class MainContentViewHolder(private val view: DescFragmentBodyBinding) :
 }
 
 class DescriptionViewHolder(private val view: DescFragmentBody2Binding) :
-    BasicViewBindingViewHolder(view.root) {
+    DescAbstractVH(view.root) {
     override fun <T> bind(item: T) {
         if (item is RowDescUI) {
             view.apply {

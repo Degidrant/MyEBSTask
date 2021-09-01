@@ -1,6 +1,5 @@
 package com.flexeiprata.androidmytaskapplication.ui.main
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -8,10 +7,10 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
-import com.flexeiprata.androidmytaskapplication.ui.models.DescUIModel
-import com.flexeiprata.androidmytaskapplication.ui.models.RowDescUI
-import com.flexeiprata.androidmytaskapplication.ui.models.RowHeaderUI
-import com.flexeiprata.androidmytaskapplication.ui.models.RowMainUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.DescUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowDescUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowHeaderUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowMainUI
 import com.flexeiprata.androidmytaskapplication.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

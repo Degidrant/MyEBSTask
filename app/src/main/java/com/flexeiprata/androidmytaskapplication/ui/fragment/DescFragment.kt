@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
-import com.flexeiprata.androidmytaskapplication.ui.adapter.DescUIRecyclerAdapter
+import com.flexeiprata.androidmytaskapplication.ui.adapter.DesciptionAdapterUI
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
-import com.flexeiprata.androidmytaskapplication.ui.models.DescUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.DescUIModel
 import com.flexeiprata.androidmytaskapplication.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -121,7 +121,7 @@ class DescFragment : Fragment() {
         binding.apply {
             recyclerUIDesc.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = DescUIRecyclerAdapter(listOfModels)
+                adapter = DesciptionAdapterUI(listOfModels)
                 addItemDecoration(
                     DividerItemDecoration(
                         requireContext(),

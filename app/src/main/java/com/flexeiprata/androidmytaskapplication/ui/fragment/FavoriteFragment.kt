@@ -16,7 +16,7 @@ import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.FavViewModel
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*

@@ -12,7 +12,7 @@ import com.flexeiprata.androidmytaskapplication.data.pagination.MainDataSource
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.utils.PAGE_SIZE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map

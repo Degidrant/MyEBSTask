@@ -7,13 +7,20 @@ import androidx.recyclerview.widget.ListAdapter
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBody2Binding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBodyBinding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
-import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
-import com.flexeiprata.androidmytaskapplication.ui.models.*
+import com.flexeiprata.androidmytaskapplication.ui.models.payloads.DescUIPayloads
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.DescUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowDescUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowHeaderUI
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.RowMainUI
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.DescAbstractVH
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.DescriptionViewHolder
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.HeaderViewHolder
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.MainContentViewHolder
 
-class DescUIRecyclerAdapter(
+class DesciptionAdapterUI(
     private val listOfModels: MutableList<DescUIModel>
 ) :
-    ListAdapter<DescUIModel, BasicViewBindingViewHolder>(DiffCallback()) {
+    ListAdapter<DescUIModel, DescAbstractVH>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<DescUIModel>() {
         override fun areItemsTheSame(oldItem: DescUIModel, newItem: DescUIModel): Boolean {
@@ -52,7 +59,7 @@ class DescUIRecyclerAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BasicViewBindingViewHolder {
+    ): DescAbstractVH {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             HEADER -> HeaderViewHolder(DescFragmentHeaderBinding.inflate(inflater, parent, false))
@@ -74,7 +81,7 @@ class DescUIRecyclerAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: BasicViewBindingViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(holder: DescAbstractVH, position: Int, payloads: MutableList<Any>) {
         if (!payloads.isNullOrEmpty()) {
             payloads.forEach { payloadList ->
                 if (payloadList is List<*>) {
@@ -96,7 +103,7 @@ class DescUIRecyclerAdapter(
 
     override fun getItemCount(): Int = listOfModels.size
 
-    override fun onBindViewHolder(holder: BasicViewBindingViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DescAbstractVH, position: Int) {
         holder.bind(listOfModels[position])
     }
 

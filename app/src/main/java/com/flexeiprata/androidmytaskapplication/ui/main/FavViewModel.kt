@@ -8,7 +8,7 @@ import com.flexeiprata.androidmytaskapplication.data.api.ApiHelper
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.repository.CartRepository
 import com.flexeiprata.androidmytaskapplication.data.repository.LocalRepository
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

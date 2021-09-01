@@ -2,9 +2,9 @@ package com.flexeiprata.androidmytaskapplication.ui.viewholders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 
-abstract class ViewBindingProductsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+abstract class ProductAbstractVH(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: ProductUIModel)
     abstract fun updatePrice(price: Int)
     abstract fun updateName(name: String)

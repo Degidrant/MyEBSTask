@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.data.models.Product
-import com.flexeiprata.androidmytaskapplication.data.models.ProductPayloads
+import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.ui.main.MainViewModel
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

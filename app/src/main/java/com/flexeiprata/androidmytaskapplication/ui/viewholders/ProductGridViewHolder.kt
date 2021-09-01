@@ -8,10 +8,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterGridBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.ProductsAdapter
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
 
-class GridProductsViewHolder(private val view: MainAdapterGridBinding, private val parentInterface: ProductsAdapter.FavoriteSwitch) :
-    ViewBindingProductsViewHolder(view.root) {
+class ProductGridViewHolder(private val view: MainAdapterGridBinding, private val parentInterface: ProductsAdapter.FavoriteSwitch) :
+    ProductAbstractVH(view.root) {
     override fun bind(item: ProductUIModel) {
         val product = item.product
         view.apply {

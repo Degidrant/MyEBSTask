@@ -7,19 +7,19 @@ import androidx.fragment.app.Fragment
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.flexeiprata.androidmytaskapplication.data.models.Product
-import com.flexeiprata.androidmytaskapplication.data.models.ProductPayloads
+import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ProductPayloads
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterBinding
 import com.flexeiprata.androidmytaskapplication.databinding.MainAdapterGridBinding
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
-import com.flexeiprata.androidmytaskapplication.ui.models.ProductUIModel
-import com.flexeiprata.androidmytaskapplication.ui.viewholders.GridProductsViewHolder
-import com.flexeiprata.androidmytaskapplication.ui.viewholders.RowsProductsViewHolder
-import com.flexeiprata.androidmytaskapplication.ui.viewholders.ViewBindingProductsViewHolder
+import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ProductUIModel
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.ProductGridViewHolder
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.ProductRowsViewHolder
+import com.flexeiprata.androidmytaskapplication.ui.viewholders.ProductAbstractVH
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 
 class ProductsAdapter(
     fragment: Fragment
-) : PagingDataAdapter<ProductUIModel, ViewBindingProductsViewHolder>(MainDiffUtil) {
+) : PagingDataAdapter<ProductUIModel, ProductAbstractVH>(MainDiffUtil) {
 
     private val parentInterface: FavoriteSwitch
 
@@ -30,30 +30,30 @@ class ProductsAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ViewBindingProductsViewHolder {
+    ): ProductAbstractVH {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType){
             1 -> {
                 val binding =
                     MainAdapterBinding.inflate(inflater, parent, false)
-                RowsProductsViewHolder(binding, parentInterface)
+                ProductRowsViewHolder(binding, parentInterface)
             }
             else -> {
                 val binding =
                     MainAdapterGridBinding.inflate(inflater, parent, false)
-                GridProductsViewHolder(binding, parentInterface)
+                ProductGridViewHolder(binding, parentInterface)
             }
         }
     }
 
-    override fun onBindViewHolder(holder: ViewBindingProductsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProductAbstractVH, position: Int) {
         getItem(position)?.let {
             holder.bind(it)
         }
     }
 
     override fun onBindViewHolder(
-        holder: ViewBindingProductsViewHolder,
+        holder: ProductAbstractVH,
         position: Int,
         payloads: MutableList<Any>
     ) {
