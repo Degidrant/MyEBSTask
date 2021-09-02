@@ -77,6 +77,8 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                 binding.mainRV.smoothScrollToPosition(0)
             }
         }
+        //TODO: TTTT
+        findNavController().navigate(MainFragmentDirections.actionMainFragmentToDescFragment(2))
     }
 
     override fun onStart() {

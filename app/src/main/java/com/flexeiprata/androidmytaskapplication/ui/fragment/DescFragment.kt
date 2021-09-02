@@ -3,14 +3,12 @@ package com.flexeiprata.androidmytaskapplication.ui.fragment
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -44,24 +42,33 @@ class DescFragment : Fragment() {
     private val viewModel: DescViewModel by viewModels()
     private val args: DescFragmentArgs by navArgs()
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var requestLauncherMessages: ActivityResultLauncher<String>
+    private lateinit var requestLauncherScreenshots: ActivityResultLauncher<String>
+
+    private var dialogReq: ContactChooserBottomSheetDialog? = null
+
+    private var screenshotLambda: () -> Unit = {
+        createBottomDialog(true)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        requestPermissionLauncher = RequestPermissionsHelper.requestInstance(this, {
+        requestLauncherMessages = RequestPermissionsHelper.requestInstanceDefault(this) {
             findNavController().navigate(
                 DescFragmentDirections.actionDescFragmentToContactFragment(
                     "link",
                     "name"
                 )
             )
-        }, {
-            Toast.makeText(
-                requireContext(),
-                "Sorry, unable without permission",
-                Toast.LENGTH_SHORT
-            ).show()
-        })
+        }
+        requestLauncherScreenshots = RequestPermissionsHelper.requestInstanceWithElse(this,
+            {
+                screenshotLambda.invoke()
+            },
+            {
+                createBottomDialog(false)
+            }
+        )
     }
 
     override fun onCreateView(
@@ -100,49 +107,69 @@ class DescFragment : Fragment() {
                 findNavController().popBackStack()
             }
             mainToolbar.setSecondOptionOnClickListener {
+                createBottomDialog(true)
+            }
+        }
+    }
 
-                when {
-                    ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.READ_CONTACTS
-                    ) == PackageManager.PERMISSION_GRANTED -> {
-                        ContactChooserBottomSheetDialog.getInstance().apply {
-                            setMessageAction {
-                                findNavController().navigate(
-                                    DescFragmentDirections.actionDescFragmentToContactFragment(
-                                        "link",
-                                        "name"
-                                    )
-                                )
-                            }
-                            val screenshotHelper = ScreenshotHelper(this@DescFragment.requireActivity())
-                            screenshotHelper.screenshotHelperFun {
-                                val bitmap = (it as ScreenshotBitmap).bitmap
-                                setScreenshotByFun(bitmap)
-                                screenshotHelper.proceedScreenshotSave(screenshot)
-                                this.show(this@DescFragment.parentFragmentManager, "tag")
-                            }
-                            setScreenshotAction {
-                                val shareIntent = Intent(Intent.ACTION_SEND)
-                                shareIntent.type = "image/png"
-                                val bmpUri = screenshotHelper.getUriFromScreenshot()
-                                shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
-                                val message = String.format(this@DescFragment.getString(R.string.share_message), "title", "link")
-                                shareIntent.putExtra(Intent.EXTRA_TEXT, message)
-                                startActivity(Intent.createChooser(shareIntent, this@DescFragment.getString(R.string.share)))
-                            }
-                        }
+    private fun createBottomDialog(isRequested: Boolean) {
+        dialogReq = ContactChooserBottomSheetDialog.getInstance().apply {
+            setTextColor(false)
+            setMessageAction {
+                RequestPermissionsHelper.requestPermission(
+                    requireContext(),
+                    Manifest.permission.READ_CONTACTS,
+                    requestLauncherMessages,
+                    {
+                        findNavController().navigate(
+                            DescFragmentDirections.actionDescFragmentToContactFragment(
+                                "link",
+                                "name"
+                            )
+                        )
                     }
-                    shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) -> {
-
+                )
+            }
+            screenshotLambda =
+                {
+                    val screenshotHelper =
+                        ScreenshotHelper(this@DescFragment.requireActivity())
+                    screenshotHelper.screenshotHelperFun {
+                        val bitmap = (it as ScreenshotBitmap).bitmap
+                        setScreenshotByFun(bitmap)
+                        screenshotHelper.proceedScreenshotSave(screenshot)
+                        setTextColor(true)
+                        this.show(this@DescFragment.parentFragmentManager, "tag")
                     }
-                    else -> {
-                        requestPermissionLauncher.launch(
-                            Manifest.permission.READ_CONTACTS
+                    setScreenshotAction {
+                        val shareIntent = Intent(Intent.ACTION_SEND)
+                        shareIntent.type = "image/png"
+                        val bmpUri = screenshotHelper.getUriFromScreenshot()
+                        shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
+                        val message = String.format(
+                            this@DescFragment.getString(R.string.share_message),
+                            "title",
+                            "link"
+                        )
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, message)
+                        startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                this@DescFragment.getString(R.string.share)
+                            )
                         )
                     }
                 }
+            if (isRequested) RequestPermissionsHelper.requestPermission(
+                this@DescFragment.requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                requestLauncherScreenshots,
+                {
+                    screenshotLambda.invoke()
+                }
+            ) else {
+                this.show(this@DescFragment.parentFragmentManager, "tag")
             }
         }
     }
