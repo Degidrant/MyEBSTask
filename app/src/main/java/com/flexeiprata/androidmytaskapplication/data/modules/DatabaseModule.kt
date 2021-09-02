@@ -38,4 +38,5 @@ object DatabaseModule {
 
     @Provides
     fun provideApplicationContext(@ApplicationContext context: Context) : Context = context
+
 }
