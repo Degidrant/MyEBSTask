@@ -77,7 +77,7 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                 binding.mainRV.smoothScrollToPosition(0)
             }
         }
-        //TODO: TTTT
+        //TODO: Without API working
         findNavController().navigate(MainFragmentDirections.actionMainFragmentToDescFragment(2))
     }
 

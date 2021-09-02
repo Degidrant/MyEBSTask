@@ -12,17 +12,17 @@ class RequestPermissionsHelper {
     companion object {
         fun requestInstanceDefault(
             context: Fragment,
-            actionIsGranted: () -> Unit
+            actionIfGranted: () -> Unit
         ) =
             context.registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
                 if (isGranted) {
-                    actionIsGranted.invoke()
+                    actionIfGranted.invoke()
                 } else {
                     Toast.makeText(
                         context.requireContext(),
-                        "Sorry, unable without permission",
+                        "Sorry, it is unable without permission",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -30,16 +30,16 @@ class RequestPermissionsHelper {
 
         fun requestInstanceWithElse(
             context: Fragment,
-            actionIsGranted: () -> Unit,
-            actionIsNotGranted: () -> Unit
+            actionIfGranted: () -> Unit,
+            actionIfNotGranted: () -> Unit
         ) =
             context.registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
                 if (isGranted) {
-                    actionIsGranted.invoke()
+                    actionIfGranted.invoke()
                 } else {
-                    actionIsNotGranted.invoke()
+                    actionIfNotGranted.invoke()
                 }
             }
 
@@ -47,18 +47,18 @@ class RequestPermissionsHelper {
             context: Context,
             permission: String,
             requestPermissionLauncher: ActivityResultLauncher<String>,
-            actionIsGranted: () -> Unit,
-            actionIsNotGranted: () -> Unit = {requestPermissionLauncher.launch(permission)}
+            actionIfGranted: () -> Unit,
+            actionIfNotGranted: () -> Unit = {requestPermissionLauncher.launch(permission)}
         ) {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(
                     context,
                     permission
                 ) -> {
-                    actionIsGranted.invoke()
+                    actionIfGranted.invoke()
                 }
                 else -> {
-                    actionIsNotGranted.invoke()
+                    actionIfNotGranted.invoke()
                 }
             }
         }

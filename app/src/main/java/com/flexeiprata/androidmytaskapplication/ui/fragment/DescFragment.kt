@@ -45,12 +45,6 @@ class DescFragment : Fragment() {
     private lateinit var requestLauncherMessages: ActivityResultLauncher<String>
     private lateinit var requestLauncherScreenshots: ActivityResultLauncher<String>
 
-    private var dialogReq: ContactChooserBottomSheetDialog? = null
-
-    private var screenshotLambda: () -> Unit = {
-        createBottomDialog(true)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         requestLauncherMessages = RequestPermissionsHelper.requestInstanceDefault(this) {
@@ -63,7 +57,7 @@ class DescFragment : Fragment() {
         }
         requestLauncherScreenshots = RequestPermissionsHelper.requestInstanceWithElse(this,
             {
-                screenshotLambda.invoke()
+                createBottomDialog(true)
             },
             {
                 createBottomDialog(false)
@@ -113,7 +107,7 @@ class DescFragment : Fragment() {
     }
 
     private fun createBottomDialog(isRequested: Boolean) {
-        dialogReq = ContactChooserBottomSheetDialog.getInstance().apply {
+        ContactChooserBottomSheetDialog.getInstance().apply {
             setTextColor(false)
             setMessageAction {
                 RequestPermissionsHelper.requestPermission(
@@ -130,7 +124,10 @@ class DescFragment : Fragment() {
                     }
                 )
             }
-            screenshotLambda =
+            if (isRequested) RequestPermissionsHelper.requestPermission(
+                this@DescFragment.requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                requestLauncherScreenshots,
                 {
                     val screenshotHelper =
                         ScreenshotHelper(this@DescFragment.requireActivity())
@@ -160,13 +157,6 @@ class DescFragment : Fragment() {
                             )
                         )
                     }
-                }
-            if (isRequested) RequestPermissionsHelper.requestPermission(
-                this@DescFragment.requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                requestLauncherScreenshots,
-                {
-                    screenshotLambda.invoke()
                 }
             ) else {
                 this.show(this@DescFragment.parentFragmentManager, "tag")
