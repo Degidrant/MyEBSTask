@@ -1,10 +1,10 @@
-package com.flexeiprata.androidmytaskapplication.data.modules
+package com.flexeiprata.androidmytaskapplication.ui.common
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class AppModule : Application() {
+class ApplicationClass : Application() {
     override fun onCreate() {
         super.onCreate()
     }
