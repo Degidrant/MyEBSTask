@@ -17,6 +17,7 @@ import com.flexeiprata.androidmytaskapplication.ui.viewholders.DescriptionViewHo
 import com.flexeiprata.androidmytaskapplication.ui.viewholders.HeaderViewHolder
 import com.flexeiprata.androidmytaskapplication.ui.viewholders.MainContentViewHolder
 
+// TODO: remove list from Constructor 
 class DesciptionAdapterUI(
     private val listOfModels: MutableList<DescUIModel>
 ) :
@@ -47,6 +48,7 @@ class DesciptionAdapterUI(
         const val BODY_DESC = 2
     }
 
+    // TODO: use currentList 
     override fun getItemViewType(position: Int): Int {
         return when (listOfModels[position]) {
             is RowHeaderUI -> HEADER
@@ -97,12 +99,16 @@ class DesciptionAdapterUI(
                 }
             }
         } else {
+            // TODO: use currentList 
                 holder.bind(listOfModels[position])
             }
         }
 
+
+    // TODO: I think this method is not neccesary 
     override fun getItemCount(): Int = listOfModels.size
 
+    // TODO: use currentList 
     override fun onBindViewHolder(holder: DescAbstractVH, position: Int) {
         holder.bind(listOfModels[position])
     }
