@@ -97,6 +97,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
+    //Screenshots
+    implementation 'eu.bolt:screenshotty:1.0.4'
+    implementation 'eu.bolt:screenshotty-coroutines:1.0.4'
+
 }
 kapt {
     correctErrorTypes true

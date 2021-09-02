@@ -1,12 +1,9 @@
 package com.flexeiprata.androidmytaskapplication.data.pagination
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.flexeiprata.androidmytaskapplication.data.models.Product
 import com.flexeiprata.androidmytaskapplication.data.repository.MainRepository
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
-import com.flexeiprata.androidmytaskapplication.utils.PAGE_SIZE
 
 class MainDataSource(private val repository: MainRepository, private val text: String) : PagingSource<Int, Product>() {
 
@@ -19,7 +16,7 @@ class MainDataSource(private val repository: MainRepository, private val text: S
             val pagesCount = response.body()?.total_pages
             responseData.addAll(data)
             val prevKey = if (currentLoadingPageKey == 1) null else currentLoadingPageKey - 1
-            val nextKey = if (currentLoadingPageKey == pagesCount) null else currentLoadingPageKey + 1
+            val nextKey = if (currentLoadingPageKey == pagesCount || pagesCount == null) null else currentLoadingPageKey + 1
             return LoadResult.Page(
                 data = responseData,
                 prevKey = prevKey,

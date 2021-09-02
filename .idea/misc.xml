@@ -15,17 +15,20 @@
         <entry key="app/src/main/res/drawable/ic_filter.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ic_heart.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ic_row_style.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.3287037037037037" />
         <entry key="app/src/main/res/drawable/ic_user.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ic_vector.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ic_vector_3.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_arrow_back.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_cart_empty.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/ns_contact.xml" value="0.3287037037037037" />
         <entry key="app/src/main/res/drawable/ns_expand.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_favorite_full.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_filter.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_grid.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_header.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/ns_like.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/ns_phone.xml" value="0.32407407407407407" />
         <entry key="app/src/main/res/drawable/ns_profile.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/round.xml" value="0.371875" />
         <entry key="app/src/main/res/drawable/search_shape.xml" value="0.33055555555555555" />
@@ -33,7 +36,10 @@
         <entry key="app/src/main/res/font/open_sans_megabold.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3401268115942029" />
         <entry key="app/src/main/res/layout/cart_button.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/custom_toolbar.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/contact_adapter.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/contact_chooser_bf.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/contact_fragment.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/layout/custom_toolbar.xml" value="0.5" />
         <entry key="app/src/main/res/layout/desc_fragment.xml" value="0.33" />
         <entry key="app/src/main/res/layout/desc_fragment_body.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/desc_fragment_body_2.xml" value="0.35572916666666665" />
@@ -49,6 +55,7 @@
         <entry key="app/src/main/res/layout/test_includer.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/menu/main_menu_favorite.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/xml/fileprovide.xml" value="0.35572916666666665" />
       </map>
     </option>
   </component>

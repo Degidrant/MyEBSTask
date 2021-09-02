@@ -35,4 +35,7 @@ object DatabaseModule {
             "MainDatabase"
         ).build()
     }
+
+    @Provides
+    fun provideApplicationContext(@ApplicationContext context: Context) : Context = context
 }

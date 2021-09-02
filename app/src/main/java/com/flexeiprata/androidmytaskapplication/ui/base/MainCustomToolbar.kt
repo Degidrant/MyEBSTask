@@ -28,6 +28,7 @@ class MainCustomToolbar @JvmOverloads constructor(
                     val image1 = getResourceId(R.styleable.MainCustomToolbar_homeIcon, 0)
                     val image2 = getResourceId(R.styleable.MainCustomToolbar_secondHomeIcon, 0)
                     val image3 = getResourceId(R.styleable.MainCustomToolbar_optionIcon, 0)
+                    val image4 = getResourceId(R.styleable.MainCustomToolbar_secondOptionIcon, 0)
                     val imageCenter = getResourceId(R.styleable.MainCustomToolbar_centralPicture, 0)
                     if (image1 != 0) imageViewToolbar1.setImageDrawable(
                         AppCompatResources.getDrawable(
@@ -45,6 +46,12 @@ class MainCustomToolbar @JvmOverloads constructor(
                         AppCompatResources.getDrawable(
                             context,
                             image3
+                        )
+                    )
+                    if (image4 != 0) imageViewToolbar4.setImageDrawable(
+                        AppCompatResources.getDrawable(
+                            context,
+                            image4
                         )
                     )
                     if (imageCenter != 0) toolbarMainView.setImageDrawable(
@@ -66,6 +73,10 @@ class MainCustomToolbar @JvmOverloads constructor(
 
     fun setSecondHoneOnClickListener(onClickListener: (View) -> Unit){
         binding.imageViewToolbar2.setOnClickListener(onClickListener)
+    }
+
+    fun setSecondOptionOnClickListener(onClickListener: (View) -> Unit){
+        binding.imageViewToolbar4.setOnClickListener(onClickListener)
     }
 
     fun setOptionOnClickListener(onClickListener: (View) -> Unit){

@@ -24,6 +24,9 @@
         <argument
             android:name="id"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_descFragment_to_contactFragment"
+            app:destination="@id/contactFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
@@ -32,5 +35,16 @@
         <action
             android:id="@+id/action_favoriteFragment_to_descFragment"
             app:destination="@id/descFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="com.flexeiprata.androidmytaskapplication.ui.fragment.ContactFragment"
+        android:label="ContactFragment" >
+        <argument
+            android:name="link"
+            app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </fragment>
 </navigation>

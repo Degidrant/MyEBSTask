@@ -4,6 +4,7 @@
         <attr name="homeIcon" format="reference" />
         <attr name="secondHomeIcon" format="reference" />
         <attr name="optionIcon" format="reference"/>
+        <attr name="secondOptionIcon" format="reference"/>
         <attr name="centralPicture" format="reference" />
     </declare-styleable>
 
