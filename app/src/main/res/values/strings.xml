@@ -15,4 +15,5 @@
     <string name="share_message">Check out this %1s, here is the link: %2s</string>
     <string name="send_via_message">Send via SMS</string>
     <string name="send_via_screenshot">Send via screenshot</string>
+    <string name="share">Share screenshot via</string>
 </resources>

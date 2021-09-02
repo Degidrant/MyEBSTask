@@ -4,16 +4,13 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -28,16 +25,14 @@ import com.flexeiprata.androidmytaskapplication.ui.dialog.ContactChooserBottomSh
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.DescUIModel
 import com.flexeiprata.androidmytaskapplication.utils.RequestPermissionsHelper
+import com.flexeiprata.androidmytaskapplication.utils.ScreenshotHelper
 import com.flexeiprata.androidmytaskapplication.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
 import eu.bolt.screenshotty.ScreenshotBitmap
-import eu.bolt.screenshotty.ScreenshotManagerBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
 
 
 @AndroidEntryPoint
@@ -111,7 +106,7 @@ class DescFragment : Fragment() {
                         requireContext(),
                         Manifest.permission.READ_CONTACTS
                     ) == PackageManager.PERMISSION_GRANTED -> {
-                        val dialog = ContactChooserBottomSheetDialog.getInstance().apply {
+                        ContactChooserBottomSheetDialog.getInstance().apply {
                             setMessageAction {
                                 findNavController().navigate(
                                     DescFragmentDirections.actionDescFragmentToContactFragment(
@@ -120,54 +115,22 @@ class DescFragment : Fragment() {
                                     )
                                 )
                             }
-                            val screenshotManager =
-                                ScreenshotManagerBuilder(this@DescFragment.requireActivity()).build()
-                            val screenshotResult = screenshotManager.makeScreenshot()
-                            screenshotResult.observe(
-                                onSuccess = {
-                                    setScreenshotByFun(
-                                        (it as ScreenshotBitmap).bitmap
-                                    )
-                                    val file = File(
-                                        this@DescFragment.requireContext()
-                                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                                        "screen.png"
-                                    )
-                                    val out = FileOutputStream(file)
-                                    screenshot?.compress(Bitmap.CompressFormat.PNG, 90, out)
-                                    out.close()
-                                    this.show(this@DescFragment.parentFragmentManager, "tag")
-                                },
-                                onError = {}
-                            )
+                            val screenshotHelper = ScreenshotHelper(this@DescFragment.requireActivity())
+                            screenshotHelper.screenshotHelperFun {
+                                val bitmap = (it as ScreenshotBitmap).bitmap
+                                setScreenshotByFun(bitmap)
+                                screenshotHelper.proceedScreenshotSave(screenshot)
+                                this.show(this@DescFragment.parentFragmentManager, "tag")
+                            }
                             setScreenshotAction {
                                 val shareIntent = Intent(Intent.ACTION_SEND)
                                 shareIntent.type = "image/png"
-                                val bmpUri = FileProvider.getUriForFile(
-                                    this@DescFragment.requireContext(),
-                                    "com.flexeiprata.androidmytaskapplication",
-                                    File(
-                                        this@DescFragment.requireContext()
-                                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                                        "screen.png"
-                                    )
-                                )
+                                val bmpUri = screenshotHelper.getUriFromScreenshot()
                                 shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri)
-                                shareIntent.putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    String.format(
-                                        this@DescFragment.getString(R.string.share_message),
-                                        "title",
-                                        "link"
-                                    )
-                                )
-                                startActivity(
-                                    Intent.createChooser(
-                                        shareIntent,
-                                        "Share image using"
-                                    )
-                                )
+                                val message = String.format(this@DescFragment.getString(R.string.share_message), "title", "link")
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, message)
+                                startActivity(Intent.createChooser(shareIntent, this@DescFragment.getString(R.string.share)))
                             }
                         }
                     }
