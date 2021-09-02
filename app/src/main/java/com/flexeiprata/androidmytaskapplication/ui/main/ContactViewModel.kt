@@ -10,8 +10,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactViewModel @Inject constructor(private val app: Application) : AndroidViewModel(app) {
-
+    // TODO: Not a good solution. Every time you will get "contactList" -> a new content provider look up will happen. 
+    // TODO: Wrap contact list into LiveData or SharedFlow/StateFlow
     val contactList = getContacts()
+
+
+    // TODO: Make db query async (background thread)
 
     @SuppressLint("Range")
     private fun getContacts(): MutableList<ContactsUIModel> {
