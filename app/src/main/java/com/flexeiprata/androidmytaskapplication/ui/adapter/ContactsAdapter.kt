@@ -10,8 +10,7 @@ import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ContactsPayloads
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ContactsUIModel
 
-// TODO: remove list from constructor
-class ContactsAdapter(private val list: MutableList<ContactsUIModel>) :
+class ContactsAdapter :
     ListAdapter<ContactsUIModel, ContactsAdapter.ContactViewHolder>(ContactsDiffUtil) {
 
     private var shareWith: ((String) -> Unit)? = null
@@ -22,8 +21,7 @@ class ContactsAdapter(private val list: MutableList<ContactsUIModel>) :
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        // TODO: replace list with currentList available in ListAdapter
-        holder.bind(list[position])
+        holder.bind(currentList[position])
     }
 
     override fun onBindViewHolder(
@@ -43,12 +41,9 @@ class ContactsAdapter(private val list: MutableList<ContactsUIModel>) :
                 }
             }
         } else {
-            holder.bind(list[position])
+            holder.bind(currentList[position])
         }
     }
-
-    // TODO: I think this method is not necesarry
-    override fun getItemCount(): Int = list.size
 
     fun setShareListener(action: (number: String) -> Unit){
         shareWith = action
