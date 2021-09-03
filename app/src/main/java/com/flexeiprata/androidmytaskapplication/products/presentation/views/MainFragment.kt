@@ -1,6 +1,5 @@
 package com.flexeiprata.androidmytaskapplication.products.presentation.views
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -13,11 +12,12 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
+import com.flexeiprata.androidmytaskapplication.common.paintFab
 import com.flexeiprata.androidmytaskapplication.databinding.FragmentMainBinding
+import com.flexeiprata.androidmytaskapplication.favorites.presentation.view.FavResult
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
 import com.flexeiprata.androidmytaskapplication.products.presentation.adapter.ProductsAdapter
 import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.ProductPayloads
-import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.ProductUIModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -34,7 +34,6 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     private var isLoading = true
 
     private lateinit var magicLinearManager: GridLayoutManager
-    private var favList = listOf<Product>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,21 +76,18 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             }
         }
         //TODO: Without API working
-        findNavController().navigate(
+        /*findNavController().navigate(
             MainFragmentDirections.actionMainFragmentToDescFragment(
                 2
             )
-        )
+        )*/
     }
 
     override fun onStart() {
         super.onStart()
         binding.searchBar.addTextChangedListener { editable ->
             lifecycleScope.launch {
-                val flow = viewModel.listData(editable.toString(), favList)
-                flow.collectLatest {
-                    adapter.submitData(it)
-                }
+                viewModel.initialize(editable.toString())
             }
         }
     }
@@ -99,66 +95,46 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
 
     private fun switchLayoutManager(isLinear: Boolean) {
         binding.apply {
+            val deco = DividerItemDecoration(
+                mainRV.context,
+                DividerItemDecoration.VERTICAL
+            )
             magicLinearManager.spanCount = if (isLinear) {
-                fabColumnStyle.backgroundTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.deep_blue))
-                fabColumnStyle.imageTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.white))
-                fabSquareStyle.backgroundTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.light_gray))
-                fabSquareStyle.imageTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.deep_blue))
-                mainRV.addItemDecoration(
-                    DividerItemDecoration(
-                        mainRV.context,
-                        DividerItemDecoration.VERTICAL
-                    )
-                )
+                fabColumnStyle.paintFab(requireContext(), R.color.white, R.color.deep_blue)
+                fabSquareStyle.paintFab(requireContext(), R.color.deep_blue, R.color.light_gray)
+                mainRV.addItemDecoration(deco)
                 1
             } else {
-                fabSquareStyle.backgroundTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.deep_blue))
-                fabSquareStyle.imageTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.white))
-                binding.fabColumnStyle.backgroundTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.light_gray))
-                fabColumnStyle.imageTintList =
-                    ColorStateList.valueOf(requireContext().getColor(R.color.deep_blue))
-                try {
-                    mainRV.removeItemDecoration(mainRV.getItemDecorationAt(0))
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
+                fabSquareStyle.paintFab(requireContext(), R.color.white, R.color.deep_blue)
+                fabColumnStyle.paintFab(requireContext(), R.color.deep_blue, R.color.light_gray)
+                mainRV.removeItemDecoration(deco)
                 2
             }
             adapter.notifyItemRangeChanged(0, mainRV.adapter!!.itemCount - 1)
+
         }
     }
 
 
     private fun setupObservers() {
-        var init = Job() as Job
-        init = lifecycleScope.launchWhenCreated {
-            viewModel.getAllFav().collect {
-                favList = it
-                init.cancel()
-            }
-        }
+        viewModel.initialize("")
+        viewModel.getCart()
         lifecycleScope.launchWhenCreated {
-            init.join()
-            viewModel.listData("", favList).collect {
-                adapter.submitData(it)
+            viewModel.state.collectLatest {
+                if (it is ProductResult.Success)
+                adapter.submitData(it.data)
             }
         }
+
     }
 
     private fun setupObserversUI() {
         lifecycleScope.launchWhenCreated {
-            try {
-                viewModel.getAllFav().collect { favList ->
+            viewModel.favState.collectLatest {
+                if (it is FavResult.Success){
                     val mainList = adapter.snapshot().items
                     mainList.forEach { inListItem ->
-                        if (!findItemInFav(inListItem, favList, mainList) && inListItem.isFav) {
+                        if (!viewModel.findItemInFav(inListItem, it.data, mainList, adapter) && inListItem.isFav) {
                             inListItem.isFav = false
                             adapter.notifyItemChanged(
                                 mainList.indexOf(inListItem),
@@ -167,34 +143,14 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                         }
                     }
                 }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-            }
-            viewModel.getCart().collectLatest {
-                binding.cartButton.setCounter(it.size)
             }
         }
-
-    }
-
-    private fun findItemInFav(
-        inListItem: ProductUIModel,
-        favList: List<Product>,
-        mainList: List<ProductUIModel>
-    ): Boolean {
-        var guarantee = false
-        favList.forEach { inFavItem ->
-            if (inListItem.product.id == inFavItem.id && !inListItem.isFav) {
-                inListItem.isFav = true
-                adapter.notifyItemChanged(
-                    mainList.indexOf(inListItem),
-                    mutableListOf(ProductPayloads.FavChanged(true))
-                )
-                return true
+        lifecycleScope.launchWhenCreated {
+            viewModel.cartState.collectLatest{
+                if (it is FavResult.Success)
+                binding.cartButton.setCounter(it.data.size)
             }
-            if (inListItem.product.id == inFavItem.id) guarantee = true
         }
-        return guarantee
     }
 
     private fun setRecyclerViewUI() {
@@ -209,10 +165,12 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                     if (it.refresh == LoadState.Loading) {
                         View.VISIBLE
                     } else {
-                        if (binding.searchBar.text.toString().isNotEmpty()) binding.mainRV.layoutManager?.scrollToPosition(0)
+                        if (binding.searchBar.text.toString()
+                                .isNotEmpty()
+                        ) binding.mainRV.layoutManager?.scrollToPosition(0)
                         View.INVISIBLE
                     }
-            } catch (ex: Exception){
+            } catch (ex: Exception) {
                 ex.printStackTrace()
             }
 

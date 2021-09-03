@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -16,7 +15,6 @@ import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.databinding.FavFragmentBinding
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
 import com.flexeiprata.androidmytaskapplication.products.presentation.adapter.ProductsAdapter
-import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.ProductUIModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +27,6 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
 
     private val viewModel: FavViewModel by viewModels()
     private var adapter: ProductsAdapter = ProductsAdapter(this)
-    private var mainList = listOf<Product>()
     private var isRefresh = false
     private lateinit var refresher: SwipeRefreshLayout.OnRefreshListener
 
@@ -56,7 +53,7 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         }
         refresher = SwipeRefreshLayout.OnRefreshListener {
             lifecycleScope.launch {
-                viewModel.actualizeData(mainList)
+                viewModel.actualizeData()
                 withContext(Dispatchers.Main) {
                     binding.swiper.isRefreshing = false
                 }
@@ -70,14 +67,27 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     }
 
     private fun setupObservers() {
+        viewModel.loadAllFavs()
+        viewModel.loadCart()
         lifecycleScope.launchWhenCreated {
-            viewModel.getCart().collectLatest {
-                binding.cartButton.setCounter(it.size)
+            viewModel.stateInfo.collectLatest {
+                when(it){
+                    is FavResult.Error -> {}
+                    is FavResult.Loading -> {}
+                    is FavResult.Success -> {
+                        updateAdapter(it.data)
+                        binding.favCountText.text = it.data.size.toString()
+                    }
+                }
             }
-            viewModel.getAllFav().collectLatest {
-                updateAdapter(it)
-                mainList = it
-                binding.favCountText.text = it.size.toString()
+            viewModel.cartStateInfo.collectLatest {
+                when(it){
+                    is FavResult.Error -> {}
+                    is FavResult.Loading -> {}
+                    is FavResult.Success -> {
+                        binding.cartButton.setCounter(it.data.size)
+                    }
+                }
             }
         }
     }
@@ -93,10 +103,7 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                     isRefresh = false
                 }
                 Log.d(LOG_DEBUG, "Here is updater UI")
-                submitData(PagingData.from(dataList.map {
-                    Log.d(LOG_DEBUG, "${it.name}: $${it.price}")
-                    ProductUIModel(it, true)
-                }))
+                submitData(viewModel.mapTheData(dataList))
             }
         }
     }

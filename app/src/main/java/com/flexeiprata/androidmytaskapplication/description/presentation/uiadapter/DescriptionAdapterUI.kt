@@ -7,25 +7,23 @@ import androidx.recyclerview.widget.ListAdapter
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBody2Binding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBodyBinding
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentHeaderBinding
-import com.flexeiprata.androidmytaskapplication.description.presentation.views.uimodels.DescUIModel
 import com.flexeiprata.androidmytaskapplication.description.presentation.views.uimodels.DescUIPayloads
+import com.flexeiprata.androidmytaskapplication.description.presentation.views.uimodels.RowItem
 
-// TODO: remove list from Constructor 
-class DesciptionAdapterUI(
-    private val listOfModels: MutableList<DescUIModel>
+class DescriptionAdapterUI(
 ) :
-    ListAdapter<DescUIModel, DescAbstractVH>(DiffCallback()) {
+    ListAdapter<RowItem, DescAbstractVH>(DiffCallback()) {
 
-    class DiffCallback : DiffUtil.ItemCallback<DescUIModel>() {
-        override fun areItemsTheSame(oldItem: DescUIModel, newItem: DescUIModel): Boolean {
+    class DiffCallback : DiffUtil.ItemCallback<RowItem>() {
+        override fun areItemsTheSame(oldItem: RowItem, newItem: RowItem): Boolean {
             return oldItem.id() == newItem.id()
         }
 
-        override fun areContentsTheSame(oldItem: DescUIModel, newItem: DescUIModel): Boolean {
+        override fun areContentsTheSame(oldItem: RowItem, newItem: RowItem): Boolean {
             return oldItem.equality(newItem)
         }
 
-        override fun getChangePayload(oldItem: DescUIModel, newItem: DescUIModel): Any? {
+        override fun getChangePayload(oldItem: RowItem, newItem: RowItem): Any? {
             val payloads = oldItem.payloads(newItem)
             return if (!payloads.isNullOrEmpty())
                 payloads
@@ -41,9 +39,8 @@ class DesciptionAdapterUI(
         const val BODY_DESC = 2
     }
 
-    // TODO: use currentList 
     override fun getItemViewType(position: Int): Int {
-        return when (listOfModels[position]) {
+        return when (currentList[position]) {
             is RowHeaderUI -> HEADER
             is RowMainUI -> BODY_MAIN
             is RowDescUI -> BODY_DESC
@@ -92,18 +89,12 @@ class DesciptionAdapterUI(
                 }
             }
         } else {
-            // TODO: use currentList 
-                holder.bind(listOfModels[position])
+                holder.bind(currentList[position])
             }
         }
 
-
-    // TODO: I think this method is not neccesary 
-    override fun getItemCount(): Int = listOfModels.size
-
-    // TODO: use currentList 
     override fun onBindViewHolder(holder: DescAbstractVH, position: Int) {
-        holder.bind(listOfModels[position])
+        holder.bind(currentList[position])
     }
 
 }

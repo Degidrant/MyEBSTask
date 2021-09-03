@@ -18,16 +18,15 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
 import com.flexeiprata.androidmytaskapplication.common.RequestPermissionsHelper
-import com.flexeiprata.androidmytaskapplication.common.Status
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.views.ContactChooserBottomSheetDialog
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
 import com.flexeiprata.androidmytaskapplication.description.misc.ScreenshotHelper
-import com.flexeiprata.androidmytaskapplication.description.presentation.uiadapter.DesciptionAdapterUI
-import com.flexeiprata.androidmytaskapplication.description.presentation.views.uimodels.DescUIModel
+import com.flexeiprata.androidmytaskapplication.description.presentation.uiadapter.DescriptionAdapterUI
+import com.flexeiprata.androidmytaskapplication.description.presentation.views.uimodels.RowItem
 import dagger.hilt.android.AndroidEntryPoint
 import eu.bolt.screenshotty.ScreenshotBitmap
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -76,13 +75,13 @@ class DescFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
         binding.buttonAddToCard.setOnClickListener {
-            viewModel.addToCart(requireContext())
+            viewModel.addToCart()
         }
         binding.apply {
 
             mainToolbar.setOptionOnClickListener {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val checker = viewModel.getFavById(args.id).first() == null
+                    val checker = viewModel.checkIfIsFav(id)
                     if (checker) {
                         viewModel.insertFav()
                         withContext(Dispatchers.Main) {
@@ -164,38 +163,37 @@ class DescFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.getProductsById(args.id).observe(
-            viewLifecycleOwner,
-            {
-                it?.let {
-                    when (it.status) {
-                        Status.SUCCESS -> {
-                            it.data?.let { productData ->
-                                updateUI(productData)
-                            }
-                            binding.progressBarLoading.visibility = View.GONE
-                        }
-                        Status.ERROR -> {
-                            Toast.makeText(requireContext(), "Loading error: ${it.message}", Toast.LENGTH_SHORT)
-                                .show()
-                            binding.progressBarLoading.visibility = View.GONE
-                            binding.imageViewNoConnection.visibility = View.VISIBLE
-                            binding.textViewNoConnection.visibility = View.VISIBLE
-                        }
-                        Status.LOADING -> {
-                            binding.progressBarLoading.visibility = View.VISIBLE
-                        }
+        lifecycleScope.launchWhenCreated {
+            viewModel.getProductsById(args.id)
+            viewModel.sharedState.collectLatest {
+                when (it){
+                    is DescResult.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                            .show()
+                        binding.progressBarLoading.visibility = View.GONE
+                        binding.imageViewNoConnection.visibility = View.VISIBLE
+                        binding.textViewNoConnection.visibility = View.VISIBLE
+                    }
+                    is DescResult.Loading -> {
+                        binding.progressBarLoading.visibility = View.VISIBLE
+                    }
+                    is DescResult.Success -> {
+                            updateUI(it.data)
+                        binding.progressBarLoading.visibility = View.GONE
                     }
                 }
             }
-        )
+        }
+
     }
 
-    private fun updateUI(listOfModels: MutableList<DescUIModel>) {
+    private fun updateUI(listOfModels: List<RowItem?>) {
         binding.apply {
             recyclerUIDesc.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = DesciptionAdapterUI(listOfModels)
+                adapter = DescriptionAdapterUI().apply {
+                    submitList(listOfModels)
+                }
                 addItemDecoration(
                     DividerItemDecoration(
                         requireContext(),
@@ -204,7 +202,7 @@ class DescFragment : Fragment() {
                 )
             }
             lifecycleScope.launch(Dispatchers.IO) {
-                val checker = viewModel.getFavById(args.id).first() == null
+                val checker = viewModel.checkIfIsFav(id)
                 val image =
                     if (!checker) R.drawable.ns_favorite_full
                     else R.drawable.ns_like

@@ -3,10 +3,10 @@ package com.flexeiprata.androidmytaskapplication.contacts.presentation.views
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
-import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.adapters.ContactsAdapter
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.ContactFragmentBinding
@@ -63,9 +62,14 @@ class ContactFragment : Fragment() {
         }
         binding.ContactsRV.adapter = adapter
         lifecycleScope.launchWhenCreated {
-            viewModel.contactList.collect {
-                Log.d(LOG_DEBUG, "Collected")
-                updateList(it)
+            viewModel.contactList.collect {state ->
+                when(state){
+                    is ContactsResult.Success -> updateList(state.data)
+                    is ContactsResult.Error -> Toast.makeText(requireContext(), "Error during loading", Toast.LENGTH_SHORT).show()
+                    is ContactsResult.Loading -> {
+
+                    }
+                }
             }
         }
         viewModel.registerObserver(requireContext())
@@ -76,7 +80,7 @@ class ContactFragment : Fragment() {
 
     }
 
-    private fun updateList(list: List<ContactsUIModel>) {
+    private fun updateList(list: List<ContactsUIModel?>) {
         adapter.submitList(list)
     }
 

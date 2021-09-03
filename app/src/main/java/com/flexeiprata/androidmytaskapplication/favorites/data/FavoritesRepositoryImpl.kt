@@ -10,8 +10,8 @@ class FavoritesRepositoryImpl @Inject constructor(private val dao: FavoritesDao)
         dao.insertFavorite(product)
     }
 
-    override suspend fun deleteFav(product: Product) {
-        dao.deleteFavorite(product.id)
+    override suspend fun deleteFav(id: Int) {
+        dao.deleteFavorite(id)
     }
 
     override fun getFavByID(id: Int) = dao.getFavByID(id)

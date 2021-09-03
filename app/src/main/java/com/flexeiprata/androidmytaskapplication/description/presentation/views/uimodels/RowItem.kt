@@ -2,8 +2,8 @@ package com.flexeiprata.androidmytaskapplication.description.presentation.views.
 
 import com.flexeiprata.androidmytaskapplication.common.Payloadable
 
-abstract class DescUIModel(){
+abstract class RowItem(){
     abstract fun id() : Any
-    abstract fun equality(other: DescUIModel) : Boolean
-    abstract fun payloads(other: DescUIModel) : List<Payloadable>
+    abstract fun equality(other: RowItem) : Boolean
+    abstract fun payloads(other: RowItem) : List<Payloadable>
 }

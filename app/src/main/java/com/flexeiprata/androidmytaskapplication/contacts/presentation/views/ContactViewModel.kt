@@ -17,9 +17,13 @@ import javax.inject.Inject
 @HiltViewModel
 class ContactViewModel @Inject constructor(private val getAllContactsUseCase: GetAllContactsUseCase) : ViewModel() {
 
-    private lateinit var contactListValue: List<ContactsUIModel>
-    private val mutableContactList = MutableStateFlow(emptyList<ContactsUIModel>())
+    //StateFlow
+    private val mutableContactList = MutableStateFlow<ContactsResult>(
+        ContactsResult.Loading(
+        emptyList()))
     val contactList = mutableContactList.asStateFlow()
+
+    private lateinit var contactListValue: List<ContactsUIModel>
     private val contactsObserver = ContentContactsObserver(getAllContactsUseCase, mutableContactList)
 
     fun registerObserver(context: Context){
@@ -33,7 +37,7 @@ class ContactViewModel @Inject constructor(private val getAllContactsUseCase: Ge
     fun registerStateFlow(){
         viewModelScope.launch(Dispatchers.IO) {
             contactListValue = getAllContactsUseCase()
-            mutableContactList.value = contactListValue
+            mutableContactList.value = ContactsResult.Success(contactListValue)
         }
     }
 

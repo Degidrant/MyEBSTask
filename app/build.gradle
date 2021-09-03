@@ -100,6 +100,7 @@ dependencies {
     //Screenshots
     implementation 'eu.bolt:screenshotty:1.0.4'
     implementation 'eu.bolt:screenshotty-coroutines:1.0.4'
+    implementation "org.jetbrains.kotlin:kotlin-script-runtime:1.5.21"
 
 }
 kapt {
