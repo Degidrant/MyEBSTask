@@ -179,6 +179,8 @@ class DescFragment : Fragment() {
                             Toast.makeText(requireContext(), "Loading error: ${it.message}", Toast.LENGTH_SHORT)
                                 .show()
                             binding.progressBarLoading.visibility = View.GONE
+                            binding.imageViewNoConnection.visibility = View.VISIBLE
+                            binding.textViewNoConnection.visibility = View.VISIBLE
                         }
                         Status.LOADING -> {
                             binding.progressBarLoading.visibility = View.VISIBLE

@@ -16,4 +16,5 @@
     <string name="send_via_message">Send via SMS</string>
     <string name="send_via_screenshot">Send via screenshot</string>
     <string name="share">Share screenshot via</string>
+    <string name="no_connection">Sorry, no internet connection</string>
 </resources>
