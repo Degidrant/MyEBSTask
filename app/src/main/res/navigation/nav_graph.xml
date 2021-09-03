@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.flexeiprata.androidmytaskapplication.ui.fragment.MainFragment"
+        android:name="com.flexeiprata.androidmytaskapplication.products.presentation.views.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/descFragment"
-        android:name="com.flexeiprata.androidmytaskapplication.ui.fragment.DescFragment"
+        android:name="com.flexeiprata.androidmytaskapplication.description.presentation.views.DescFragment"
         android:label="DescFragment" >
         <argument
             android:name="id"
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.flexeiprata.androidmytaskapplication.ui.fragment.FavoriteFragment"
+        android:name="com.flexeiprata.androidmytaskapplication.favorites.presentation.view.FavoriteFragment"
         android:label="FavoriteFragment" >
         <action
             android:id="@+id/action_favoriteFragment_to_descFragment"

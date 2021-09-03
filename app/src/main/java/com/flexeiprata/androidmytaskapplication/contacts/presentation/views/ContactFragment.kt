@@ -14,11 +14,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
+import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.adapters.ContactsAdapter
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
-import com.flexeiprata.androidmytaskapplication.contacts.presentation.viewmodels.ContactViewModel
 import com.flexeiprata.androidmytaskapplication.databinding.ContactFragmentBinding
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 

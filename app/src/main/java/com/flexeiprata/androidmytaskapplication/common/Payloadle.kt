@@ -1,0 +1,3 @@
+package com.flexeiprata.androidmytaskapplication.common
+
+interface Payloadable

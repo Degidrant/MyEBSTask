@@ -90,7 +90,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-    <com.flexeiprata.androidmytaskapplication.ui.base.CartButtonView
+    <com.flexeiprata.androidmytaskapplication.customui.CartButtonView
         android:id="@+id/cartButton"
         android:layout_width="0dp"
         android:layout_height="@dimen/_33sdp"
@@ -105,7 +105,7 @@
         app:leftIcon="@drawable/ns_cart_empty"
         app:mainText="@string/my_cart" />
 
-    <com.flexeiprata.androidmytaskapplication.ui.base.MainCustomToolbar
+    <com.flexeiprata.androidmytaskapplication.customui.MainCustomToolbar
         android:id="@+id/mainToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

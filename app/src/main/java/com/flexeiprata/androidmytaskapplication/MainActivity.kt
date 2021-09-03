@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
+import com.flexeiprata.androidmytaskapplication.common.PRODUCT_ID
 import com.flexeiprata.androidmytaskapplication.databinding.MainActivityBinding
-import com.flexeiprata.androidmytaskapplication.ui.fragment.MainFragmentDirections
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
-import com.flexeiprata.androidmytaskapplication.utils.PRODUCT_ID
+import com.flexeiprata.androidmytaskapplication.products.presentation.views.MainFragmentDirections
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".ui.fragment.MainFragment">
+        tools:context=".products.presentation.views.MainFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/collapser"
@@ -55,7 +55,7 @@
                     android:textSize="@dimen/_16ssp"
                     app:layout_collapseMode="none" />
 
-                <com.flexeiprata.androidmytaskapplication.ui.base.MainCustomToolbar
+                <com.flexeiprata.androidmytaskapplication.customui.MainCustomToolbar
                     android:id="@+id/mainCustomToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-    <com.flexeiprata.androidmytaskapplication.ui.base.CartButtonView
+    <com.flexeiprata.androidmytaskapplication.customui.CartButtonView
         android:id="@+id/cartButton"
         android:layout_width="0dp"
         android:layout_height="@dimen/_33sdp"

@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.flexeiprata.androidmytaskapplication.common.Payloadable
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsPayloads
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
 import com.flexeiprata.androidmytaskapplication.databinding.ContactAdapterBinding
-import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
 
 class ContactsAdapter :
     ListAdapter<ContactsUIModel, ContactsAdapter.ContactViewHolder>(ContactsDiffUtil) {

@@ -5,8 +5,8 @@ import android.content.Context
 import android.os.Looper
 import android.provider.ContactsContract
 import android.util.Log
+import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
-import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import javax.inject.Inject
 
 class ContactsContentProvider @Inject constructor(private val context: Context) {
