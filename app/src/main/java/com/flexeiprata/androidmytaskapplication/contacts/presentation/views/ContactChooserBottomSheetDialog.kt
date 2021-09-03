@@ -1,4 +1,4 @@
-package com.flexeiprata.androidmytaskapplication.ui.dialog
+package com.flexeiprata.androidmytaskapplication.contacts.presentation.views
 
 import android.graphics.Bitmap
 import android.os.Bundle

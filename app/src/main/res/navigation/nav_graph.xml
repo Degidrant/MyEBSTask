@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/contactFragment"
-        android:name="com.flexeiprata.androidmytaskapplication.ui.fragment.ContactFragment"
+        android:name="com.flexeiprata.androidmytaskapplication.contacts.presentation.views.ContactFragment"
         android:label="ContactFragment" >
         <argument
             android:name="link"

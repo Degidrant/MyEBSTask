@@ -17,9 +17,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
+import com.flexeiprata.androidmytaskapplication.contacts.presentation.views.ContactChooserBottomSheetDialog
 import com.flexeiprata.androidmytaskapplication.databinding.DescFragmentBinding
 import com.flexeiprata.androidmytaskapplication.ui.adapter.DesciptionAdapterUI
-import com.flexeiprata.androidmytaskapplication.ui.dialog.ContactChooserBottomSheetDialog
 import com.flexeiprata.androidmytaskapplication.ui.main.DescViewModel
 import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.DescUIModel
 import com.flexeiprata.androidmytaskapplication.utils.RequestPermissionsHelper

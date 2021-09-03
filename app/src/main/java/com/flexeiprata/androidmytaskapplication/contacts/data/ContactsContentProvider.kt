@@ -1,13 +1,15 @@
-package com.flexeiprata.androidmytaskapplication.utils
+package com.flexeiprata.androidmytaskapplication.contacts.data
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
 import android.provider.ContactsContract
 import android.util.Log
-import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ContactsUIModel
+import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
+import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
+import javax.inject.Inject
 
-class ContactsHelper(private val context: Context) {
+class ContactsContentProvider @Inject constructor(private val context: Context) {
 
     @SuppressLint("Range")
     fun getContacts(): MutableList<ContactsUIModel> {

@@ -1,7 +1,6 @@
-package com.flexeiprata.androidmytaskapplication.ui.models.uimodels
+package com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels
 
 import com.flexeiprata.androidmytaskapplication.ui.common.Payloadable
-import com.flexeiprata.androidmytaskapplication.ui.models.payloads.ContactsPayloads
 
 data class ContactsUIModel(val id: String, val displayedName: String, val phoneNumber: String){
     fun payloads(other: ContactsUIModel) : List<Payloadable>{

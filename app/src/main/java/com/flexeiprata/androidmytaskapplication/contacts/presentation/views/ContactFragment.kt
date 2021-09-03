@@ -1,4 +1,4 @@
-package com.flexeiprata.androidmytaskapplication.ui.fragment
+package com.flexeiprata.androidmytaskapplication.contacts.presentation.views
 
 import android.content.Intent
 import android.net.Uri
@@ -14,10 +14,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexeiprata.androidmytaskapplication.R
+import com.flexeiprata.androidmytaskapplication.contacts.presentation.adapters.ContactsAdapter
+import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
+import com.flexeiprata.androidmytaskapplication.contacts.presentation.viewmodels.ContactViewModel
 import com.flexeiprata.androidmytaskapplication.databinding.ContactFragmentBinding
-import com.flexeiprata.androidmytaskapplication.ui.adapter.ContactsAdapter
-import com.flexeiprata.androidmytaskapplication.ui.main.ContactViewModel
-import com.flexeiprata.androidmytaskapplication.ui.models.uimodels.ContactsUIModel
 import com.flexeiprata.androidmytaskapplication.utils.LOG_DEBUG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -69,7 +69,7 @@ class ContactFragment : Fragment() {
                 updateList(it)
             }
         }
-        viewModel.registerObserver()
+        viewModel.registerObserver(requireContext())
         viewModel.registerStateFlow()
         binding.mainToolbar.setHomeOnClickListener {
             findNavController().popBackStack()
@@ -83,7 +83,7 @@ class ContactFragment : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
-        viewModel.unregisterObserver()
+        viewModel.unregisterObserver(requireContext())
         super.onDestroyView()
     }
 }
