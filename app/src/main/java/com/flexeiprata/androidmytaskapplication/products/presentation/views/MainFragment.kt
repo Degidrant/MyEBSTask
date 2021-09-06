@@ -120,8 +120,18 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         lifecycleScope.launchWhenCreated {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest {
-                    if (it is ProductResult.Success)
-                        adapter.submitData(it.data)
+                    when(it){
+                        is ProductResult.Error -> {
+
+                        }
+                        is ProductResult.Loading -> {
+
+                        }
+                        is ProductResult.Success -> {
+                            adapter.submitData(it.data)
+                        }
+                    }
+
                 }
             }
         }
@@ -180,6 +190,13 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                         ) binding.mainRV.layoutManager?.scrollToPosition(0)
                         View.INVISIBLE
                     }
+
+                if (it.append.endOfPaginationReached && adapter.itemCount < 1) {
+                    binding.apply {
+                        imageViewNoConnection2.visibility = View.VISIBLE
+                        textViewNoConnection2.visibility = View.VISIBLE
+                    }
+                }
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }

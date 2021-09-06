@@ -53,7 +53,6 @@ class MainViewModel @Inject constructor(
     private val compositeDisposable = CompositeDisposable()
 
     fun initialize(text: String) {
-        viewModelScope.launch {
             var listFav = emptyList<Product>()
             getAllFavsUseCaseRX()
                 .subscribeOn(Schedulers.io()).subscribe {
@@ -62,10 +61,12 @@ class MainViewModel @Inject constructor(
                 }.also {
                     compositeDisposable.add(it)
                 }
+        viewModelScope.launch {
             listData(text, listFav).collectLatest {
                 mState.value = ProductResult.Success(it)
             }
         }
+
     }
 
     private fun listData(text: String, listFav: List<Product>) = Pager(PagingConfig(PAGE_SIZE)) {

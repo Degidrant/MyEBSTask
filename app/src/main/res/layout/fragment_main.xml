@@ -150,8 +150,34 @@
             android:paddingTop="@dimen/_20sdp"
             android:paddingBottom="@dimen/_50sdp"
             android:translationZ="-10dp" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+
+    <ImageView
+        android:id="@+id/imageViewNoConnection2"
+        android:layout_width="@dimen/_64sdp"
+        android:layout_height="@dimen/_64sdp"
+        android:layout_marginTop="120dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_notification"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/textViewNoConnection2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/no_connection"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewNoConnection2"
+        tools:visibility="visible" />
 
     <com.flexeiprata.androidmytaskapplication.customui.CartButtonView
         android:id="@+id/cartButton"

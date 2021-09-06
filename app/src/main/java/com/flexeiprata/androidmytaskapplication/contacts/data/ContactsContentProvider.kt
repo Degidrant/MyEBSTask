@@ -14,7 +14,10 @@ class ContactsContentProvider @Inject constructor(private val context: Context) 
 
     @SuppressLint("Range")
     private fun getContacts(): MutableList<ContactsUIModel> {
-        Log.d(LOG_DEBUG, "It is main thread? Answer is " + (Looper.myLooper() == Looper.getMainLooper()).toString())
+        Log.d(
+            LOG_DEBUG,
+            "It is main thread? Answer is " + (Looper.myLooper() == Looper.getMainLooper()).toString()
+        )
         val listOfContacts = mutableListOf<ContactsUIModel>()
         val sortOrder = "${ContactsContract.Contacts.Entity.DISPLAY_NAME} ASC"
         val projection =
@@ -55,12 +58,12 @@ class ContactsContentProvider @Inject constructor(private val context: Context) 
         return listOfContacts
     }
 
-    fun getContactsRx() : Single<List<ContactsUIModel>> {
-        return Single.create {emitter ->
+    fun getContactsRx(): Single<List<ContactsUIModel>> {
+        return Single.create { emitter ->
             try {
                 val contacts = getContacts()
                 emitter.onSuccess(contacts)
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 emitter.onError(e)
             }
         }
