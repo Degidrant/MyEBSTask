@@ -1,7 +1,8 @@
 package com.flexeiprata.androidmytaskapplication.cart.presentation
 
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
+import io.reactivex.rxjava3.core.Completable
 
 interface AddToCartUseCase {
-    suspend operator fun invoke(product: Product)
+    operator fun invoke(product: Product): Completable
 }

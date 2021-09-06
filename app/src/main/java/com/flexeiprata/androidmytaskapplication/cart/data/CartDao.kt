@@ -4,17 +4,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 
 @Dao
 interface CartDao {
 
     @Query("Select * from products_in_cart")
-    fun getCart(): Flow<List<ProductInCart>>
+    fun getCart(): Observable<List<ProductInCart>>
 
     @Query("Delete from products_in_cart")
-    suspend fun clearCart()
+    fun clearCart(): Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addToCart(product: ProductInCart)
+    fun addToCart(product: ProductInCart): Completable
 }

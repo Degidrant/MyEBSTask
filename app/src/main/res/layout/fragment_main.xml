@@ -62,6 +62,7 @@
                     app:homeIcon="@drawable/ns_profile"
                     app:centralPicture="@drawable/iconic"
                     app:optionIcon="@drawable/ns_like"
+                    app:secondOptionIcon="@drawable/circle"
                     app:layout_collapseMode="pin"
                     />
 

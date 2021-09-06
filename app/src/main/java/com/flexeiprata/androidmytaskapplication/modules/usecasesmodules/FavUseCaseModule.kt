@@ -17,11 +17,14 @@ abstract class FavUseCaseModule {
     abstract fun bindsDeleteFavUseCase(implementation: DeleteFavUseCaseImpl): DeleteFavUseCase
 
     @Binds
-    abstract fun bindsGetAllFavsUseCase(implementation: GetAllFavsUseCaseImpl): GetAllFavsUseCase
-
-    @Binds
     abstract fun bindsGetFavByIdUseCase(implementation: GetFavByIDUseCaseImpl): GetFavByIdUseCase
 
     @Binds
     abstract fun bindsInsertFavUseCase(implementation: InsertFavUseCaseImpl): InsertFavUseCase
+
+    @Binds
+    abstract fun bindsGetAllFavsRXUseCase(implementation: GetAllFavsRXUseCaseImpl): GetAllFavsRXUseCase
+
+    @Binds
+    abstract fun bindsInsertFavUseCaseCo(implementation: InsertFavUseCaseCoImpl): InsertFavUseCaseCo
 }

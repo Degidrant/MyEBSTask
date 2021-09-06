@@ -7,5 +7,5 @@ import javax.inject.Inject
 class ContactsRepositoryImpl @Inject constructor(context: Application) : ContactsRepository {
 
     private val contactsContentProvider = ContactsContentProvider(context)
-    override fun getContacts() = contactsContentProvider.getContacts()
+    override fun getContacts() = contactsContentProvider.getContactsRx()
 }

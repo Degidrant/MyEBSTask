@@ -1,5 +1,7 @@
 package com.flexeiprata.androidmytaskapplication.cart.presentation
 
+import io.reactivex.rxjava3.core.Completable
+
 interface ClearCartUseCase {
-    suspend operator fun invoke()
+    operator fun invoke(): Completable
 }

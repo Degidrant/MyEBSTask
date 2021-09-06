@@ -1,12 +1,15 @@
 package com.flexeiprata.androidmytaskapplication.favorites.domain
 
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 interface FavoritesRepository {
-    fun getAllFav() : Flow<List<Product>>
-    suspend fun insertFav(product: Product)
-    suspend fun deleteFav(id: Int)
-    fun getFavByID(id: Int) : Flow<Product?>
-    suspend fun actualize(product: Product)
+    fun getAllFavRX(): Observable<List<Product>>
+    fun insertFav(product: Product): Completable
+    fun insertFavCo(product: Product): Completable
+    fun deleteFav(id: Int): Completable
+    fun getFavByID(id: Int): Single<Product?>
+    fun actualize(product: Product): Completable
 }

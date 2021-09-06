@@ -12,6 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -33,6 +34,7 @@ object RetrofitModule {
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
 
     @Provides
@@ -50,4 +52,5 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideDescApiHelper(descApiService:  DescApiService) = DescApiHelper(descApiService)
+
 }

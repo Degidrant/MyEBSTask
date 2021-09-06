@@ -1,7 +1,8 @@
 package com.flexeiprata.androidmytaskapplication.description.presentation.usecases
 
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
+import io.reactivex.rxjava3.core.Single
 
 interface GetProductUseCase {
-    suspend operator fun invoke(id: Int) : Product
+    operator fun invoke(id: Int) : Single<Product>
 }

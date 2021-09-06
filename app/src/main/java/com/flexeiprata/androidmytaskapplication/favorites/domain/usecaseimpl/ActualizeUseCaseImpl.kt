@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 class ActualizeUseCaseImpl @Inject constructor(private val favoritesRepository: FavoritesRepository) :
     ActualizeUseCase {
-    override suspend fun invoke(product: Product) {
-        favoritesRepository.actualize(product)
-    }
+    override fun invoke(product: Product) = favoritesRepository.actualize(product)
+
 }

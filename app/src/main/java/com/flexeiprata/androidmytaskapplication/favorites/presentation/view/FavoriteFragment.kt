@@ -67,29 +67,22 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
     }
 
     private fun setupObservers() {
-        viewModel.loadAllFavs()
-        viewModel.loadCart()
         lifecycleScope.launchWhenCreated {
             viewModel.stateInfo.collectLatest {
-                when(it){
-                    is FavResult.Error -> {}
-                    is FavResult.Loading -> {}
-                    is FavResult.Success -> {
-                        updateAdapter(it.data)
-                        binding.favCountText.text = it.data.size.toString()
-                    }
-                }
-            }
-            viewModel.cartStateInfo.collectLatest {
-                when(it){
-                    is FavResult.Error -> {}
-                    is FavResult.Loading -> {}
-                    is FavResult.Success -> {
-                        binding.cartButton.setCounter(it.data.size)
-                    }
+                if (it is FavResult.Success) {
+                    updateAdapter(it.data)
+                    binding.favCountText.text = it.data.size.toString()
                 }
             }
         }
+        lifecycleScope.launchWhenCreated {
+            viewModel.cartStateInfo.collectLatest {
+                if (it is FavResult.Success)
+                    binding.cartButton.setCounter(it.data.size)
+            }
+        }
+        viewModel.loadAllFavs()
+        viewModel.loadCart()
     }
 
     private fun updateAdapter(dataList: List<Product>) {

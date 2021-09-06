@@ -62,10 +62,14 @@ class ContactFragment : Fragment() {
         }
         binding.ContactsRV.adapter = adapter
         lifecycleScope.launchWhenCreated {
-            viewModel.contactList.collect {state ->
-                when(state){
+            viewModel.contactList.collect { state ->
+                when (state) {
                     is ContactsResult.Success -> updateList(state.data)
-                    is ContactsResult.Error -> Toast.makeText(requireContext(), "Error during loading", Toast.LENGTH_SHORT).show()
+                    is ContactsResult.Error -> Toast.makeText(
+                        requireContext(),
+                        "Error during loading",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     is ContactsResult.Loading -> {
 
                     }
@@ -73,7 +77,7 @@ class ContactFragment : Fragment() {
             }
         }
         viewModel.registerObserver(requireContext())
-        viewModel.registerStateFlow()
+        viewModel.registerRX()
         binding.mainToolbar.setHomeOnClickListener {
             findNavController().popBackStack()
         }

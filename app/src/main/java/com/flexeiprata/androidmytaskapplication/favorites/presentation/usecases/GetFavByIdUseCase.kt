@@ -1,8 +1,8 @@
 package com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases
 
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.rxjava3.core.Single
 
 interface GetFavByIdUseCase {
-    operator fun invoke(id: Int) : Flow<Product?>
+    operator fun invoke(id: Int) : Single<Product?>
 }

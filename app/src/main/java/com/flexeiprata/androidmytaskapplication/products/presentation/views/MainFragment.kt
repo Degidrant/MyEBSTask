@@ -67,6 +67,10 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
             mainCustomToolbar.setOptionOnClickListener {
                 findNavController().navigate(MainFragmentDirections.actionMainFragmentToFavoriteFragment())
             }
+            mainCustomToolbar.setSecondOptionOnClickListener {
+                findNavController().navigate(
+                    MainFragmentDirections.actionMainFragmentToDescFragment(2))
+            }
         }
         setupObserversUI()
         binding.collapser.apply {
@@ -75,12 +79,6 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                 binding.mainRV.smoothScrollToPosition(0)
             }
         }
-        //TODO: Without API working
-        /*findNavController().navigate(
-            MainFragmentDirections.actionMainFragmentToDescFragment(
-                2
-            )
-        )*/
     }
 
     override fun onStart() {
@@ -122,19 +120,25 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest {
                 if (it is ProductResult.Success)
-                adapter.submitData(it.data)
+                    adapter.submitData(it.data)
             }
         }
 
     }
 
     private fun setupObserversUI() {
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             viewModel.favState.collectLatest {
-                if (it is FavResult.Success){
+                if (it is FavResult.Success) {
                     val mainList = adapter.snapshot().items
                     mainList.forEach { inListItem ->
-                        if (!viewModel.findItemInFav(inListItem, it.data, mainList, adapter) && inListItem.isFav) {
+                        if (!viewModel.findItemInFav(
+                                inListItem,
+                                it.data,
+                                mainList,
+                                adapter
+                            ) && inListItem.isFav
+                        ) {
                             inListItem.isFav = false
                             adapter.notifyItemChanged(
                                 mainList.indexOf(inListItem),
@@ -145,10 +149,10 @@ class MainFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
                 }
             }
         }
-        lifecycleScope.launchWhenCreated {
-            viewModel.cartState.collectLatest{
+        lifecycleScope.launch {
+            viewModel.cartState.collectLatest {
                 if (it is FavResult.Success)
-                binding.cartButton.setCounter(it.data.size)
+                    binding.cartButton.setCounter(it.data.size)
             }
         }
     }

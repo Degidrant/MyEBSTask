@@ -3,6 +3,7 @@ package com.flexeiprata.androidmytaskapplication.description.presentation.views
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,10 +26,7 @@ import com.flexeiprata.androidmytaskapplication.description.presentation.uiadapt
 import com.flexeiprata.androidmytaskapplication.description.presentation.views.uimodels.RowItem
 import dagger.hilt.android.AndroidEntryPoint
 import eu.bolt.screenshotty.ScreenshotBitmap
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
@@ -74,33 +72,11 @@ class DescFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObservers()
-        binding.buttonAddToCard.setOnClickListener {
-            viewModel.addToCart()
+        binding.mainToolbar.setSecondOptionOnClickListener {
+            createBottomDialog(true)
         }
-        binding.apply {
-
-            mainToolbar.setOptionOnClickListener {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val checker = viewModel.checkIfIsFav(id)
-                    if (checker) {
-                        viewModel.insertFav()
-                        withContext(Dispatchers.Main) {
-                            mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
-                        }
-                    } else {
-                        viewModel.deleteFav()
-                        withContext(Dispatchers.Main) {
-                            mainToolbar.setOptionImage(R.drawable.ns_like)
-                        }
-                    }
-                }
-            }
-            mainToolbar.setHomeOnClickListener {
-                findNavController().popBackStack()
-            }
-            mainToolbar.setSecondOptionOnClickListener {
-                createBottomDialog(true)
-            }
+        binding.mainToolbar.setHomeOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
@@ -166,25 +142,57 @@ class DescFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.getProductsById(args.id)
             viewModel.sharedState.collectLatest {
-                when (it){
+                when (it) {
                     is DescResult.Error -> {
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
                             .show()
-                        binding.progressBarLoading.visibility = View.GONE
-                        binding.imageViewNoConnection.visibility = View.VISIBLE
-                        binding.textViewNoConnection.visibility = View.VISIBLE
+                        binding.apply {
+                            progressBarLoading.visibility = View.GONE
+                            imageViewNoConnection.visibility = View.VISIBLE
+                            textViewNoConnection.visibility = View.VISIBLE
+                            buttonAddToCard.isEnabled = false
+                            buttonBuyNow.isEnabled = false
+                            val gray =
+                                ColorStateList.valueOf(requireContext().getColor(R.color.true_gray))
+                            buttonBuyNow.backgroundTintList = gray
+                            buttonAddToCard.backgroundTintList = gray
+                        }
+
                     }
                     is DescResult.Loading -> {
                         binding.progressBarLoading.visibility = View.VISIBLE
                     }
                     is DescResult.Success -> {
-                            updateUI(it.data)
+                        updateUI(it.data)
                         binding.progressBarLoading.visibility = View.GONE
+                        createFreeOnClickListeners()
                     }
                 }
             }
         }
 
+    }
+
+    private fun createFreeOnClickListeners() {
+        binding.buttonAddToCard.setOnClickListener {
+            viewModel.addToCart()
+        }
+        binding.apply {
+
+            mainToolbar.setOptionOnClickListener {
+                viewModel.checkIfIsFav(id).subscribe { product ->
+                    val checker = (product == null)
+                    if (checker) {
+                        viewModel.insertFav()
+                        mainToolbar.setOptionImage(R.drawable.ns_favorite_full)
+
+                    } else {
+                        viewModel.deleteFav()
+                        mainToolbar.setOptionImage(R.drawable.ns_like)
+                    }
+                }
+            }
+        }
     }
 
     private fun updateUI(listOfModels: List<RowItem?>) {
@@ -201,14 +209,12 @@ class DescFragment : Fragment() {
                     )
                 )
             }
-            lifecycleScope.launch(Dispatchers.IO) {
-                val checker = viewModel.checkIfIsFav(id)
+            viewModel.checkIfIsFav(id).subscribe { product ->
+                val checker = (product == null)
                 val image =
                     if (!checker) R.drawable.ns_favorite_full
                     else R.drawable.ns_like
-                withContext(Dispatchers.Main) {
-                    mainToolbar.setOptionImage(image)
-                }
+                mainToolbar.setOptionImage(image)
             }
         }
     }

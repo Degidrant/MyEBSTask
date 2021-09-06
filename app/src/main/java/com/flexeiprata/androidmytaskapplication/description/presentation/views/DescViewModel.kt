@@ -2,7 +2,6 @@ package com.flexeiprata.androidmytaskapplication.description.presentation.views
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.flexeiprata.androidmytaskapplication.cart.presentation.AddToCartUseCase
 import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.description.presentation.uiadapter.RowDescUI
@@ -15,10 +14,12 @@ import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.
 import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.InsertFavUseCase
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,11 +35,14 @@ class DescViewModel @Inject constructor(
         MutableStateFlow<DescResult>(DescResult.Loading(emptyList<RowItem>()))
     val sharedState get() = mutableSharedFlow.asStateFlow()
 
+    private val compositeDisposable = CompositeDisposable()
+
     fun getProductsById(id: Int) {
-        viewModelScope.launch {
-            try {
-                product = getProductUseCase(id)
-                Log.d(LOG_DEBUG, "Product: $product")
+        getProductUseCase(id).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                product = it
+                Log.d(LOG_DEBUG, "On Success")
                 val listOfModels = mutableListOf<RowItem>()
                 listOfModels.add(RowHeaderUI("Header", product.category.icon))
                 listOfModels.add(
@@ -51,38 +55,57 @@ class DescViewModel @Inject constructor(
                 )
                 listOfModels.add(RowDescUI("Desc", product.details))
                 mutableSharedFlow.value = DescResult.Success(listOfModels)
-            } catch (ex: Exception) {
+            }, {
                 mutableSharedFlow.value =
-                    DescResult.Error("Error acquired during loading: ${ex.message}")
+                    DescResult.Error("Error acquired during loading: ${it.message}")
+            })
+            .also {
+                compositeDisposable.add(it)
             }
-        }
     }
 
-    suspend fun checkIfIsFav(id: Int) = (getFavByIdUseCase(id).first() != null)
+    fun checkIfIsFav(id: Int): Single<Product?> =
+        getFavByIdUseCase(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
-
-    fun insertFav() = viewModelScope.launch {
+    fun insertFav() {
         try {
-            insertFavUseCase(product)
+            insertFavUseCase(product).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+                    compositeDisposable.add(it)
+                }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
-    fun deleteFav() = viewModelScope.launch {
+    fun deleteFav() {
         try {
-            deleteFavUseCase(product.id)
+            deleteFavUseCase(product.id).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+                    compositeDisposable.add(it)
+                }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
-    fun addToCart() = viewModelScope.launch {
+    fun addToCart() {
         try {
-            addToCartUseCase(product)
+            addToCartUseCase(product).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+                    compositeDisposable.add(it)
+                }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    override fun onCleared() {
+        compositeDisposable.apply {
+            dispose()
+            clear()
+        }
+        super.onCleared()
     }
 }
 

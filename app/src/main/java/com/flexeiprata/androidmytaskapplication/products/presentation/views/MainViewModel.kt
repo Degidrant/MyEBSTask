@@ -11,7 +11,7 @@ import com.flexeiprata.androidmytaskapplication.cart.presentation.ClearCartUseCa
 import com.flexeiprata.androidmytaskapplication.cart.presentation.GetCartUseCase
 import com.flexeiprata.androidmytaskapplication.common.PAGE_SIZE
 import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.DeleteFavUseCase
-import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.GetAllFavsUseCase
+import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.GetAllFavsRXUseCase
 import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.InsertFavUseCase
 import com.flexeiprata.androidmytaskapplication.favorites.presentation.view.FavResult
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
@@ -21,14 +21,20 @@ import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.P
 import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.products.presentation.usecases.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
-    private val getAllFavsUseCase: GetAllFavsUseCase,
+    private val getAllFavsUseCaseRX: GetAllFavsRXUseCase,
     private val insertFavUseCase: InsertFavUseCase,
     private val deleteFavUseCase: DeleteFavUseCase,
     private val getCartUseCase: GetCartUseCase,
@@ -45,14 +51,21 @@ class MainViewModel @Inject constructor(
     private var mFavState = MutableStateFlow<FavResult>(FavResult.Loading(emptyList()))
     val favState get() = mFavState.asStateFlow()
 
-    fun initialize(text: String){
+    private val compositeDisposable = CompositeDisposable()
+
+    fun initialize(text: String) {
         viewModelScope.launch {
-            val listFav = getAllFavsUseCase().first()
+            var listFav = emptyList<Product>()
+            getAllFavsUseCaseRX()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe {
+                    listFav = it
+                    mFavState.value = FavResult.Success(it)
+                }.also {
+                    compositeDisposable.add(it)
+                }
             listData(text, listFav).collectLatest {
                 mState.value = ProductResult.Success(it)
-            }
-            getAllFavsUseCase().collectLatest {
-                mFavState.value = FavResult.Success(it)
             }
         }
     }
@@ -76,23 +89,30 @@ class MainViewModel @Inject constructor(
     }
 
     fun getCart() {
-        viewModelScope.launch {
-            getCartUseCase().collectLatest { collector ->
+        getCartUseCase().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe { collector ->
                 val list = mutableListOf<Product>()
                 collector.forEach {
                     list.add(it.product)
                 }
                 mCartState.value = FavResult.Success(list)
+            }.also {
+                compositeDisposable.add(it)
             }
-        }
     }
 
-    fun clearCart() = viewModelScope.launch {
-        clearCartUseCase()
+    fun clearCart() {
+        clearCartUseCase().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe().also {
+                compositeDisposable.add(it)
+            }
     }
 
-    fun addToCart(product: Product) = viewModelScope.launch {
-        addToCartUseCase(product)
+    fun addToCart(product: Product) {
+        addToCartUseCase(product).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+                compositeDisposable.add(it)
+            }
     }
 
     fun findItemInFav(
@@ -114,6 +134,14 @@ class MainViewModel @Inject constructor(
             if (inListItem.product.id == inFavItem.id) guarantee = true
         }
         return guarantee
+    }
+
+    override fun onCleared() {
+        compositeDisposable.apply {
+            dispose()
+            clear()
+        }
+        super.onCleared()
     }
 
 }

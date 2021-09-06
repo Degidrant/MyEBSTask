@@ -21,6 +21,7 @@
     <color name="warm_yellow">#FAF0D8</color>
     <color name="searched_blue">#030c2e</color>
     <color name="lost_gray">#818596</color>
+    <color name="true_gray">#CDCDCD</color>
 
 
 </resources>

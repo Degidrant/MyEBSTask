@@ -7,12 +7,13 @@ import android.provider.ContactsContract
 import android.util.Log
 import com.flexeiprata.androidmytaskapplication.common.LOG_DEBUG
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.uimodels.ContactsUIModel
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class ContactsContentProvider @Inject constructor(private val context: Context) {
 
     @SuppressLint("Range")
-    fun getContacts(): MutableList<ContactsUIModel> {
+    private fun getContacts(): MutableList<ContactsUIModel> {
         Log.d(LOG_DEBUG, "It is main thread? Answer is " + (Looper.myLooper() == Looper.getMainLooper()).toString())
         val listOfContacts = mutableListOf<ContactsUIModel>()
         val sortOrder = "${ContactsContract.Contacts.Entity.DISPLAY_NAME} ASC"
@@ -53,4 +54,43 @@ class ContactsContentProvider @Inject constructor(private val context: Context) 
         cursorQueue?.close()
         return listOfContacts
     }
+
+    fun getContactsRx() : Single<List<ContactsUIModel>> {
+        return Single.create {emitter ->
+            try {
+                val contacts = getContacts()
+                emitter.onSuccess(contacts)
+            }catch (e : Exception){
+                emitter.onError(e)
+            }
+        }
+    }
+
+    /*fun getOneContact() : Observable<ContactsUIModel> {
+        return getContactsRx().flatMapObservable {contacts ->
+            Observable.fromIterable(contacts)
+        }
+    }
+
+    fun listenOneContact() {
+        getOneContact().subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<ContactsUIModel>{
+                override fun onSubscribe(d: Disposable?) {
+
+                }
+
+                override fun onNext(t: ContactsUIModel?) {
+
+                }
+
+                override fun onError(e: Throwable?) {
+                }
+
+                override fun onComplete() {
+                }
+
+            })
+    }*/
+
 }
