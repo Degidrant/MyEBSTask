@@ -14,7 +14,6 @@ import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.
 import com.flexeiprata.androidmytaskapplication.favorites.presentation.usecases.InsertFavUseCase
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -39,7 +38,6 @@ class DescViewModel @Inject constructor(
 
     fun getProductsById(id: Int) {
         getProductUseCase(id).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 product = it
                 Log.d(LOG_DEBUG, "On Success")
@@ -65,12 +63,11 @@ class DescViewModel @Inject constructor(
     }
 
     fun checkIfIsFav(id: Int): Single<Product?> =
-        getFavByIdUseCase(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        getFavByIdUseCase(id).subscribeOn(Schedulers.io())
 
     fun insertFav() {
         try {
-            insertFavUseCase(product).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+            insertFavUseCase(product).subscribeOn(Schedulers.io()).subscribe().also {
                     compositeDisposable.add(it)
                 }
         } catch (ex: Exception) {
@@ -80,8 +77,7 @@ class DescViewModel @Inject constructor(
 
     fun deleteFav() {
         try {
-            deleteFavUseCase(product.id).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+            deleteFavUseCase(product.id).subscribeOn(Schedulers.io()).subscribe().also {
                     compositeDisposable.add(it)
                 }
         } catch (ex: Exception) {
@@ -91,8 +87,7 @@ class DescViewModel @Inject constructor(
 
     fun addToCart() {
         try {
-            addToCartUseCase(product).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+            addToCartUseCase(product).subscribeOn(Schedulers.io()).subscribe().also {
                     compositeDisposable.add(it)
                 }
         } catch (ex: Exception) {

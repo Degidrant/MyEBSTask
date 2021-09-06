@@ -21,7 +21,6 @@ import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.P
 import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.ProductUIModel
 import com.flexeiprata.androidmytaskapplication.products.presentation.usecases.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,8 +56,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             var listFav = emptyList<Product>()
             getAllFavsUseCaseRX()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe {
+                .subscribeOn(Schedulers.io()).subscribe {
                     listFav = it
                     mFavState.value = FavResult.Success(it)
                 }.also {
@@ -89,7 +87,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun getCart() {
-        getCartUseCase().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        getCartUseCase().subscribeOn(Schedulers.io())
             .subscribe { collector ->
                 val list = mutableListOf<Product>()
                 collector.forEach {
@@ -102,7 +100,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun clearCart() {
-        clearCartUseCase().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        clearCartUseCase().subscribeOn(Schedulers.io())
             .subscribe().also {
                 compositeDisposable.add(it)
             }
@@ -110,7 +108,7 @@ class MainViewModel @Inject constructor(
 
     fun addToCart(product: Product) {
         addToCartUseCase(product).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe().also {
+            .observeOn(Schedulers.io()).subscribe().also {
                 compositeDisposable.add(it)
             }
     }

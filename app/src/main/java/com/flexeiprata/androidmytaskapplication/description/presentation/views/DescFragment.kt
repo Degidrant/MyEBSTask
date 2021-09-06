@@ -12,7 +12,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -141,31 +143,33 @@ class DescFragment : Fragment() {
     private fun setupObservers() {
         lifecycleScope.launchWhenCreated {
             viewModel.getProductsById(args.id)
-            viewModel.sharedState.collectLatest {
-                when (it) {
-                    is DescResult.Error -> {
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
-                            .show()
-                        binding.apply {
-                            progressBarLoading.visibility = View.GONE
-                            imageViewNoConnection.visibility = View.VISIBLE
-                            textViewNoConnection.visibility = View.VISIBLE
-                            buttonAddToCard.isEnabled = false
-                            buttonBuyNow.isEnabled = false
-                            val gray =
-                                ColorStateList.valueOf(requireContext().getColor(R.color.true_gray))
-                            buttonBuyNow.backgroundTintList = gray
-                            buttonAddToCard.backgroundTintList = gray
-                        }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sharedState.collectLatest {
+                    when (it) {
+                        is DescResult.Error -> {
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT)
+                                .show()
+                            binding.apply {
+                                progressBarLoading.visibility = View.GONE
+                                imageViewNoConnection.visibility = View.VISIBLE
+                                textViewNoConnection.visibility = View.VISIBLE
+                                buttonAddToCard.isEnabled = false
+                                buttonBuyNow.isEnabled = false
+                                val gray =
+                                    ColorStateList.valueOf(requireContext().getColor(R.color.true_gray))
+                                buttonBuyNow.backgroundTintList = gray
+                                buttonAddToCard.backgroundTintList = gray
+                            }
 
-                    }
-                    is DescResult.Loading -> {
-                        binding.progressBarLoading.visibility = View.VISIBLE
-                    }
-                    is DescResult.Success -> {
-                        updateUI(it.data)
-                        binding.progressBarLoading.visibility = View.GONE
-                        createFreeOnClickListeners()
+                        }
+                        is DescResult.Loading -> {
+                            binding.progressBarLoading.visibility = View.VISIBLE
+                        }
+                        is DescResult.Success -> {
+                            updateUI(it.data)
+                            binding.progressBarLoading.visibility = View.GONE
+                            createFreeOnClickListeners()
+                        }
                     }
                 }
             }

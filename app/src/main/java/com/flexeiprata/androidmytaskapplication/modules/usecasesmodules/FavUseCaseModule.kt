@@ -25,6 +25,4 @@ abstract class FavUseCaseModule {
     @Binds
     abstract fun bindsGetAllFavsRXUseCase(implementation: GetAllFavsRXUseCaseImpl): GetAllFavsRXUseCase
 
-    @Binds
-    abstract fun bindsInsertFavUseCaseCo(implementation: InsertFavUseCaseCoImpl): InsertFavUseCaseCo
 }

@@ -6,7 +6,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -68,17 +70,21 @@ class FavoriteFragment : Fragment(), ProductsAdapter.FavoriteSwitch {
 
     private fun setupObservers() {
         lifecycleScope.launchWhenCreated {
-            viewModel.stateInfo.collectLatest {
-                if (it is FavResult.Success) {
-                    updateAdapter(it.data)
-                    binding.favCountText.text = it.data.size.toString()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.stateInfo.collectLatest {
+                    if (it is FavResult.Success) {
+                        updateAdapter(it.data)
+                        binding.favCountText.text = it.data.size.toString()
+                    }
                 }
             }
         }
         lifecycleScope.launchWhenCreated {
-            viewModel.cartStateInfo.collectLatest {
-                if (it is FavResult.Success)
-                    binding.cartButton.setCounter(it.data.size)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.cartStateInfo.collectLatest {
+                    if (it is FavResult.Success)
+                        binding.cartButton.setCounter(it.data.size)
+                }
             }
         }
         viewModel.loadAllFavs()

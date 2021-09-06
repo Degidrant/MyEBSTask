@@ -10,7 +10,6 @@ import com.flexeiprata.androidmytaskapplication.products.data.models.Category
 import com.flexeiprata.androidmytaskapplication.products.data.models.Product
 import com.flexeiprata.androidmytaskapplication.products.presentation.uimodels.ProductUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,15 +20,13 @@ import javax.inject.Inject
 class FavViewModel @Inject constructor(
     private val insertFavUseCase: InsertFavUseCase,
     private val deleteFavUseCase: DeleteFavUseCase,
-    private val getFavByIdUseCase: GetFavByIdUseCase,
     private val getCartUseCase: GetCartUseCase,
     private val clearCartUseCase: ClearCartUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val getProductByIdUseCase: GetFavByIdUseCase,
     private val actualizeUseCase: ActualizeUseCase,
     private val getAllFavsRXUseCase: GetAllFavsRXUseCase,
-    private val addToFavUseCase: InsertFavUseCase,
-    private val insertFavUseCaseCo: InsertFavUseCaseCo
+    private val addToFavUseCase: InsertFavUseCase
 ) : ViewModel() {
 
     private var mState = MutableStateFlow<FavResult>(FavResult.Loading(emptyList()))
@@ -44,14 +41,12 @@ class FavViewModel @Inject constructor(
     fun loadAllFavs() {
         addToFavUseCase(Product(Category("", 2, "Pro"), "A", "B", 2, "D", 150, "D", 0, 0))
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe().also {
                 compositeDisposable.add(it)
             }
 
 
         getAllFavsRXUseCase().subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 mState.value = FavResult.Success(it)
                 listForActualization = it
@@ -68,7 +63,7 @@ class FavViewModel @Inject constructor(
     }
 
     fun loadCart() {
-        getCartUseCase().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        getCartUseCase().subscribeOn(Schedulers.io())
             .subscribe { collector ->
                 val list = mutableListOf<Product>()
                 collector.forEach {
@@ -82,7 +77,6 @@ class FavViewModel @Inject constructor(
 
     fun insertFav(fav: Product) {
         insertFavUseCase(fav).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe().also {
                 compositeDisposable.add(it)
             }
@@ -90,7 +84,6 @@ class FavViewModel @Inject constructor(
 
     fun deleteFav(fav: Product) {
         deleteFavUseCase(fav.id).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe().also {
                 compositeDisposable.add(it)
             }
@@ -98,7 +91,6 @@ class FavViewModel @Inject constructor(
 
     fun clearCart() {
         clearCartUseCase().subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe().also {
                 compositeDisposable.add(it)
             }
@@ -106,7 +98,6 @@ class FavViewModel @Inject constructor(
 
     fun addToCart(product: Product) {
         addToCartUseCase(product).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe().also {
                 compositeDisposable.add(it)
             }
@@ -121,7 +112,6 @@ class FavViewModel @Inject constructor(
             try {
                 var productActualize: Product? = null
                 getProductByIdUseCase(productInList.id).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { productUseCase ->
                         productUseCase?.let { product ->
                             productActualize = product
@@ -129,17 +119,20 @@ class FavViewModel @Inject constructor(
                     }.also {
                         compositeDisposable.add(it)
                     }
-                val comparator =
-                    ProductUIModel(productActualize!!, true).isContentTheSame(
-                        ProductUIModel(
-                            productInList,
-                            true
+                productActualize?.let {
+                    val comparator =
+                        ProductUIModel(it, true).isContentTheSame(
+                            ProductUIModel(
+                                productInList,
+                                true
+                            )
                         )
-                    )
-                if (!comparator) actualizeUseCase(productActualize!!)
+                    if (!comparator) actualizeUseCase(it)
+                }
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
     }
+
 }

@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.flexeiprata.androidmytaskapplication.contacts.presentation.usecases.GetAllContactsUseCase
 import com.flexeiprata.androidmytaskapplication.contacts.utils.ContentContactsObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,8 +36,11 @@ class ContactViewModel @Inject constructor(private val getAllContactsUseCase: Ge
     fun registerRX() {
         getAllContactsUseCase()
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(Consumer { mutableContactList.value = ContactsResult.Success(it) })
+            .subscribe({
+                mutableContactList.value = ContactsResult.Success(it)
+            }, {
+                mutableContactList.value = ContactsResult.Error("Error ${it.message}")
+            })
 
     }
 
